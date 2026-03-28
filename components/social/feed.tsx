@@ -93,7 +93,7 @@ const posts = [
 
 export function Feed() {
   return (
-    <div className="flex-1 max-w-2xl border-x border-border min-h-screen">
+    <div className="flex-1 w-full border-x border-border min-h-screen">
       {/* Header */}
       <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="px-4 py-3">

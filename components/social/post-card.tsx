@@ -92,7 +92,8 @@ export function PostCard({ post }: PostProps) {
             <img
               src={post.image}
               alt="Post attachment"
-              className="w-full object-cover max-h-96 hover:opacity-90 transition-opacity cursor-pointer"
+              // className="w-full object-cover max-h-96 hover:opacity-90 transition-opacity cursor-pointer"
+              className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
             />
           </div>
         )}
