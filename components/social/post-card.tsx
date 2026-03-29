@@ -31,25 +31,25 @@ interface PostProps {
       verified?: boolean
     }
     content: string
-    image?: string
-    likes: number
-    comments: number
-    reposts: number
+    // image?: string
+    // likes: number
+    // comments: number
+    // reposts: number
     timestamp: string
-    isLiked?: boolean
-    isBookmarked?: boolean
+    // isLiked?: boolean
+    // isBookmarked?: boolean
   }
 }
 
 export function PostCard({ post }: PostProps) {
-  const [isLiked, setIsLiked] = useState(post.isLiked || false)
-  const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false)
-  const [likes, setLikes] = useState(post.likes)
+  // const [isLiked, setIsLiked] = useState(post.isLiked || false)
+  // const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false)
+  // const [likes, setLikes] = useState(post.likes)
 
-  const handleLike = () => {
-    setIsLiked(!isLiked)
-    setLikes(isLiked ? likes - 1 : likes + 1)
-  }
+  // const handleLike = () => {
+  //   setIsLiked(!isLiked)
+  //   setLikes(isLiked ? likes - 1 : likes + 1)
+  // }
 
   return (
     <Card className="border-border bg-card hover:bg-secondary/30 transition-colors">
@@ -87,18 +87,18 @@ export function PostCard({ post }: PostProps) {
       </CardHeader>
       <CardContent className="px-4 pb-3">
         <p className="text-foreground whitespace-pre-wrap leading-relaxed">{post.content}</p>
-        {post.image && (
+        {/* {post.image && (
           <div className="mt-3 overflow-hidden rounded-xl">
             <img
-              src={post.image}
+              // src={post.image}
               alt="Post attachment"
               // className="w-full object-cover max-h-96 hover:opacity-90 transition-opacity cursor-pointer"
               className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
             />
           </div>
-        )}
+        )} */}
       </CardContent>
-      <CardFooter className="flex items-center justify-between px-4 pb-4">
+      {/* <CardFooter className="flex items-center justify-between px-4 pb-4">
         <Button
           variant="ghost"
           size="sm"
@@ -147,7 +147,7 @@ export function PostCard({ post }: PostProps) {
             <Bookmark className={cn("h-5 w-5", isBookmarked && "fill-current")} />
           </Button>
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   )
 }

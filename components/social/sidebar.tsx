@@ -65,10 +65,10 @@ export function Sidebar() {
         })}
       </nav>
 
-      <Button className="mb-4 w-full gap-2 rounded-xl hidden lg:flex" size="lg">
+      {/* <Button className="mb-4 w-full gap-2 rounded-xl hidden lg:flex" size="lg">
         <PenSquare className="h-5 w-5" />
         <span>New Post</span>
-      </Button>
+      </Button> */}
 
       <Button className="mb-4 lg:hidden rounded-xl" size="icon">
         <PenSquare className="h-5 w-5" />

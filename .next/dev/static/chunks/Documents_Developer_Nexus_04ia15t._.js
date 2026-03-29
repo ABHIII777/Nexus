@@ -1859,91 +1859,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Ne
 ;
 ;
 ;
-const posts = [
-    {
-        id: "1",
-        author: {
-            name: "Sarah Chen",
-            username: "sarahchen",
-            avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-            verified: true
-        },
-        content: "Just shipped a major update to our design system! 🚀\n\nNew components include:\n• Improved dark mode support\n• Better accessibility features\n• Performance optimizations\n\nCheck it out and let me know what you think!",
-        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=400&fit=crop",
-        likes: 1243,
-        comments: 89,
-        reposts: 156,
-        timestamp: "2h",
-        isLiked: false,
-        isBookmarked: false
-    },
-    {
-        id: "2",
-        author: {
-            name: "Mike Rodriguez",
-            username: "mikerod",
-            avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-            verified: false
-        },
-        content: "The sunset from my apartment tonight was absolutely incredible. Sometimes you just have to stop and appreciate the little things in life.",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=500&fit=crop",
-        likes: 567,
-        comments: 34,
-        reposts: 23,
-        timestamp: "4h",
-        isLiked: true,
-        isBookmarked: true
-    },
-    {
-        id: "3",
-        author: {
-            name: "Emma Wilson",
-            username: "emmawilson",
-            avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-            verified: true
-        },
-        content: "Hot take: The best code is the code you never have to write.\n\nSimplicity should always win over complexity. Your future self will thank you.",
-        likes: 2891,
-        comments: 234,
-        reposts: 512,
-        timestamp: "6h",
-        isLiked: false,
-        isBookmarked: false
-    },
-    {
-        id: "4",
-        author: {
-            name: "Alex Johnson",
-            username: "alexj",
-            avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-            verified: false
-        },
-        content: "Started learning Rust this week. The borrow checker is tough but I'm finally starting to understand why it's so powerful for memory safety.\n\nAny tips from experienced Rustaceans?",
-        likes: 189,
-        comments: 67,
-        reposts: 12,
-        timestamp: "8h",
-        isLiked: false,
-        isBookmarked: false
-    },
-    {
-        id: "5",
-        author: {
-            name: "Tech Daily",
-            username: "techdaily",
-            avatar: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=100&h=100&fit=crop",
-            verified: true
-        },
-        content: "🔥 Breaking: Next.js 16 just dropped with major performance improvements!\n\n• Turbopack is now the default bundler\n• React Compiler support is stable\n• New caching APIs with better DX\n\nFull breakdown in thread 🧵",
-        image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop",
-        likes: 5672,
-        comments: 423,
-        reposts: 1234,
-        timestamp: "10h",
-        isLiked: true,
-        isBookmarked: false
-    }
-];
 function Feed() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "flex-1 w-full border-x border-border min-h-screen",
@@ -1971,27 +1886,16 @@ function Feed() {
                         className: "w-full",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsList"], {
                             className: "w-full h-auto p-0 bg-transparent border-b border-border rounded-none",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
-                                    value: "for-you",
-                                    className: "flex-1 rounded-none border-b-2 border-transparent py-4 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none font-semibold",
-                                    children: "For you"
-                                }, void 0, false, {
-                                    fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
-                                    lineNumber: 104,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
-                                    value: "following",
-                                    className: "flex-1 rounded-none border-b-2 border-transparent py-4 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none font-semibold",
-                                    children: "Following"
-                                }, void 0, false, {
-                                    fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
-                                    lineNumber: 110,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["TabsTrigger"], {
+                                value: "for-you",
+                                className: "flex-1 rounded-none border-b-2 border-transparent py-4 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none font-semibold",
+                                children: "For you"
+                            }, void 0, false, {
+                                fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
+                                lineNumber: 104,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
                             fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
                             lineNumber: 103,
                             columnNumber: 11
@@ -2012,12 +1916,12 @@ function Feed() {
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$components$2f$social$2f$stories$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Stories"], {}, void 0, false, {
                         fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
-                        lineNumber: 122,
+                        lineNumber: 116,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$components$2f$social$2f$compose$2d$box$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ComposeBox"], {}, void 0, false, {
                         fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
-                        lineNumber: 123,
+                        lineNumber: 117,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Documents$2f$Developer$2f$Nexus$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2026,18 +1930,18 @@ function Feed() {
                                 post: post
                             }, post.id, false, {
                                 fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
-                                lineNumber: 126,
+                                lineNumber: 120,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
-                        lineNumber: 124,
+                        lineNumber: 118,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Documents/Developer/Nexus/components/social/feed.tsx",
-                lineNumber: 121,
+                lineNumber: 115,
                 columnNumber: 7
             }, this)
         ]
