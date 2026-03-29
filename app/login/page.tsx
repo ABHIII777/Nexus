@@ -21,7 +21,18 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate login
+    
+    const data = await fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password
+      })
+    });
+
+    const res = await data.json();
+    console.log(res);
+
     await new Promise((resolve) => setTimeout(resolve, 1000))
     setIsLoading(false)
     router.push("/feed")

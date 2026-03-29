@@ -28,7 +28,15 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate signup
+
+    const data = await fetch("/api/signup", {
+      method: "POST",
+      body: JSON.stringify(formData)
+    });
+
+    const res = await data.json();
+    console.log(res);
+
     await new Promise((resolve) => setTimeout(resolve, 1000))
     setIsLoading(false)
     router.push("/feed")
