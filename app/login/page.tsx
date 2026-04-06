@@ -18,6 +18,7 @@ export default function LoginPage() {
     remember: false,
   })
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -29,10 +30,10 @@ export default function LoginPage() {
         password: formData.password
       })
     });
-
+    
     const res = await data.json();
-    console.log(res);
-
+    localStorage.setItem("user", JSON.stringify({id: res.id, name: res.name}));
+    
     await new Promise((resolve) => setTimeout(resolve, 1000))
     setIsLoading(false)
     router.push("/feed")

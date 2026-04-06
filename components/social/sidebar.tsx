@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
 
 const navItems = [
   { icon: Home, label: "Home", href: "/feed" },
@@ -31,6 +32,22 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const [user, setUser] = useState<{name: string} | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        if (parsed && parsed.name) {
+          setUser(parsed);
+        }
+      } catch (e) {
+        console.error("Failed to parse user from local storage", e);
+      }
+    }
+  },[]);
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-20 flex-col items-center border-r border-border bg-sidebar py-6 lg:w-64 lg:items-start lg:px-4">
@@ -79,10 +96,12 @@ export function Sidebar() {
           <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" />
           <AvatarFallback>JD</AvatarFallback>
         </Avatar>
-        <div className="hidden flex-1 lg:block">
-          <p className="text-sm font-medium text-foreground">John Doe</p>
-          <p className="text-xs text-muted-foreground">@johndoe</p>
-        </div>
+        {user && (
+          <div className="hidden flex-1 lg:block">
+            <p className="text-sm font-medium text-foreground">{user.name}</p>
+            <p className="text-xs text-muted-foreground">@{user.name}</p>
+          </div>
+        )}
         <MoreHorizontal className="hidden h-5 w-5 text-muted-foreground lg:block" />
       </div>
     </aside>

@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { PostCard } from "./post-card"
 import { ComposeBox } from "./compose-box"
 import { Stories } from "./stories"
@@ -32,6 +33,28 @@ export function Feed() {
 
   const [showCompose, setShowCompose] = useState(false);
 
+  const [post, setPost] = useState<any[]>([]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) return
+
+    const user = JSON.parse(storedUser);
+
+    console.log(user);
+
+    // fetch(`/api/feed?userID=${user.id}`)
+    //   .then(res => res.json())
+    //   .then(data => setPost(data))
+
+    fetch("/api/feed")
+      .then(res => res.json())
+      .then(data => setPost(data))
+
+  }, []);
+
+  console.log(post);
+
   return (
     <div className="flex-1 w-full border-x border-border min-h-screen">
       {/* Header */}
@@ -56,11 +79,11 @@ export function Feed() {
         {/* <Stories /> */}
         {showCompose && <ComposeBox />}
         {/* <ComposeBox /> */}
-        {/* <div className="space-y-4">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+        <div className="space-y-4">
+          {post.map((postData) => (
+            <PostCard key={postData.id} post={postData} />
           ))}
-        </div> */}
+        </div>
 
       <Button 
         className="w-auto gap-2 rounded-xl hidden lg:flex fixed top-[92%] left-[72%]"

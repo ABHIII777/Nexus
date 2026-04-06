@@ -1,16 +1,52 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Image, Smile, MapPin, CalendarDays, BarChart3 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { users } from "@/db/schema"
+import { readRouteCacheEntry } from "next/dist/client/components/segment-cache/cache"
 
 export function ComposeBox() {
   const [content, setContent] = useState("")
+  const [authorID, setAuthorID] = useState<{id: number} | null>(null);
   const maxLength = 280
+
+  // useEffect(() => {
+  //   fetch("/api/user")
+  //   .then(res => res.json())
+  //   .then(data => setAuthorID(data))
+  // }, []);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    if (!storedUser) return
+
+    const userID = JSON.parse(storedUser)
+
+    setAuthorID(userID.id)
+
+  }, [])
+
+  const handleComposePost = async() => {
+
+    // const id = authorID?.id;
+
+    console.log(content, authorID);
+
+    const data = await fetch("/api/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({content, authorId: authorID})
+    });
+
+    const res = await data.json();
+    console.log(res);
+  }
 
   return (
     <Card className="border-border bg-card mb-6">
@@ -86,6 +122,7 @@ export function ComposeBox() {
                 <Button
                   className="rounded-full px-5"
                   disabled={content.length === 0 || content.length > maxLength}
+                  onClick={handleComposePost}
                 >
                   Post
                 </Button>
