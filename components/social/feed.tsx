@@ -58,14 +58,14 @@ export function Feed() {
           ))}
         </div>
 
-      <Button 
-        className="w-auto gap-2 rounded-xl hidden lg:flex fixed top-[92%] left-[72%]"
-        size="lg"
-        onClick={() => setShowCompose(!showCompose)}
+        <Button
+          className="w-auto gap-2 rounded-xl hidden lg:flex fixed top-[92%] left-[72%]"
+          size="lg"
+          onClick={() => setShowCompose(!showCompose)}
         >
-        <PenSquare className="h-5 w-5" />
-        <span>New Post</span>
-      </Button>
+          <PenSquare className="h-5 w-5" />
+          <span>New Post</span>
+        </Button>
       </div>
     </div>
   )

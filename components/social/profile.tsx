@@ -1,6 +1,27 @@
+import { useState, useEffect } from "react";
 import { User, MapPin, Calendar, Link as LinkIcon, Edit2, Camera, MoreHorizontal, CheckCircle } from "lucide-react";
+import { PostCard } from "./post-card";
 
 export default function ProfilePage() {
+
+    const [user, setUser] = useState<{name: string} | null>(null);
+    const [post, setPost] = useState<any[]>([]);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user")
+
+        if (storedUser) {
+            try {
+                const parsed = JSON.parse(storedUser);
+                if (parsed && parsed.name) {
+                    setUser(parsed);
+                }
+            } catch (e) {
+                console.error("Failed to parse user from local storage", e);
+            }
+        }
+    }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground border-x border-border">
       {/* Cover / Banner */}
@@ -27,12 +48,12 @@ export default function ProfilePage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                Dummy89
+                {user?.name}
               </h1>
               <CheckCircle className="h-5 w-5 text-primary" />
             </div>
             <p className="text-sm text-muted-foreground">
-              @Dummy89
+              @{user?.name}
             </p>
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground max-w-lg">
@@ -74,21 +95,9 @@ export default function ProfilePage() {
 
         {/* Posts */}
         <div className="mt-4 space-y-4 pb-12">
-          <PostCard
-            name="Dummy89"
-            handle="@Dummy89"
-            text="Just joined Nexus! Excited to connect with everyone 🎉"
-          />
-          <PostCard
-            name="Dummy89"
-            handle="@Dummy89"
-            text="Working on something cool today... Stay tuned for more updates! 🚀"
-          />
-          <PostCard
-            name="Dummy89"
-            handle="@Dummy89"
-            text="This is a great platform for sharing ideas! The UI feels so fast and fluid."
-          />
+          <div className="space-y-4">
+            
+          </div>
         </div>
       </div>
     </div>
@@ -109,35 +118,3 @@ function TabButton({ label, active = false }: { label: string; active?: boolean 
     </button>
   );
 }
-
-function PostCard({ name, handle, text }: { name: string; handle: string; text: string }) {
-  return (
-    <div className="rounded-2xl p-4 bg-secondary/30 border border-border/50 transition-all hover:bg-secondary/50 hover:border-primary/20 shadow-sm group">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary border border-border shadow-inner">
-            <User className="h-5 w-5 text-muted-foreground" />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                {name}
-              </span>
-              <CheckCircle className="h-3.5 w-3.5 text-primary" />
-              <span className="text-sm text-muted-foreground">
-                {handle} · 2h
-              </span>
-            </div>
-          </div>
-        </div>
-        <button className="rounded-full p-2 text-muted-foreground transition hover:bg-primary/10 hover:text-primary">
-          <MoreHorizontal className="h-4 w-4" />
-        </button>
-      </div>
-      <p className="mt-3 text-sm leading-relaxed text-foreground/90 pl-13">
-        {text}
-      </p>
-    </div>
-  );
-}
-
