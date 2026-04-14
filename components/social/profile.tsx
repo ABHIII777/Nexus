@@ -1,12 +1,23 @@
 import { useState, useEffect } from "react";
-import { User, MapPin, Calendar, Link as LinkIcon, Edit2, Camera, MoreHorizontal, CheckCircle } from "lucide-react";
+import { User, MapPin, Calendar, Link as LinkIcon, Edit2, Camera, MoreHorizontal, CheckCircle, UsersIcon } from "lucide-react";
 import { PostCard } from "./post-card";
+import { useParams } from "next/navigation";
 
 export default function ProfilePage() {
 
-    const [user, setUser] = useState<{name: string} | null>(null);
+    const [user, setUser] = useState<any>(null);
     const [post, setPost] = useState<any[]>([]);
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
+    const params = useParams()
+    const userId = params.id;
+
+    useEffect(() => {
+        fetch(`/api/profile/${userId}`)
+            .then(res => res.json())
+            .then(data => setUser(data))
+    }, [userId])
+    
     useEffect(() => {
         const storedUser = localStorage.getItem("user")
 
@@ -14,13 +25,18 @@ export default function ProfilePage() {
             try {
                 const parsed = JSON.parse(storedUser);
                 if (parsed && parsed.name) {
-                    setUser(parsed);
+                    setCurrentUser(parsed);
                 }
             } catch (e) {
                 console.error("Failed to parse user from local storage", e);
             }
         }
     }, []);
+
+    console.log(user);
+
+    if (!user) return <div>Loading.....</div>
+
 
   return (
     <div className="min-h-screen bg-background text-foreground border-x border-border">
@@ -96,7 +112,11 @@ export default function ProfilePage() {
         {/* Posts */}
         <div className="mt-4 space-y-4 pb-12">
           <div className="space-y-4">
-            
+            {user && user.posts.map((post: any) => (
+                <div key={post.id}>
+                <p>{post.content}</p>
+                </div>
+            ))}
           </div>
         </div>
       </div>
