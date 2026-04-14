@@ -24,13 +24,12 @@ import { cn } from "@/lib/utils"
 interface PostProps {
     post: {
         id: string
-        name: string,
-        // author: {
-        //   name: string
-        //   username: string
-        //   avatar: string
-        //   verified?: boolean
-        // }
+        author: {
+          name: string
+          username: string
+          avatar: string
+          verified?: boolean
+        }
         content: string
         // image?: string
         // likes: number
@@ -42,57 +41,36 @@ interface PostProps {
     }
 }
 
-export function PostCard(post: PostProps) {
-    // const [isLiked, setIsLiked] = useState(post.isLiked || false)
-    // const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false)
-    // const [likes, setLikes] = useState(post.likes)
-
-    // const handleLike = () => {
-    //   setIsLiked(!isLiked)
-    //   setLikes(isLiked ? likes - 1 : likes + 1)
-    // }
+export function PostCard({post}: PostProps) {
 
     const [user, setUser] = useState<{ name: string } | null>(null);
-    //   const[post, setPost] = useState<{content: string; timestamp: string} | null>(null);
-    const [postData, setPostData] = useState<{name: string; content: string; timestamp: string} | null>(null);
+    const [feedData, setFeedData] = useState<{id: number, name: string, content: string} | null>(null);
 
     useEffect(() => {
-        fetch("/api/feed")
-            .then(res => res.json())
-            .then(data => setPostData(data))
-    }, [])
-
-    useEffect(() => {
-      fetch("/api/user")
+      fetch("/api/feed")
         .then(res => res.json())
-        .then(data => setUser(data))
+        .then(data => setFeedData(data))
     }, [])
-
-    console.log(post.post.name)
-    console.log(postData)
-
-
 
     return (
         <Card className="border-border bg-card hover:bg-secondary/30 transition-colors">
             <CardHeader className="flex flex-row items-start gap-4 p-4">
                 <Avatar className="h-12 w-12">
-                    {/* <AvatarImage src={post.author.avatar} alt={post.author.name} /> */}
-                    {/* <AvatarFallback>{postData?.name}</AvatarFallback> */}
-                    <AvatarFallback>{console.log(user?.name)}</AvatarFallback>
+                    <AvatarImage src={post.author.avatar} alt={post.author.name} />
+                    {/* <AvatarFallback>{feedData?.name}</AvatarFallback> */}
+                    {/* <AvatarFallback>{console.log(user[0]?.name)}</AvatarFallback> */}
                 </Avatar>
                 <div className="flex-1 space-y-1">
                     <div className="flex items-center gap-2">
                         <span className="font-semibold text-foreground hover:underline cursor-pointer">
-                            {post.post.name}
+                            {post.author.name}
                         </span>
-                        {/* {author.verified && ( */}
-                        {post.post.name && (
+                        {post.author.name && (
                             <Verified className="h-4 w-4 fill-primary text-primary-foreground" />
                         )}
-                        <span className="text-muted-foreground">@{post.post.name}</span>
+                        <span className="text-muted-foreground">@{post.author.name}</span>
                         <span className="text-muted-foreground">·</span>
-                        <span className="text-muted-foreground text-sm">{post.post.timestamp}</span>
+                        <span className="text-muted-foreground text-sm">{}</span>
                     </div>
                 </div>
                 <DropdownMenu>
@@ -103,15 +81,15 @@ export function PostCard(post: PostProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem>Not interested</DropdownMenuItem>
-                        <DropdownMenuItem>Follow @{post.post.name}</DropdownMenuItem>
-                        <DropdownMenuItem>Mute @{post.post.name}</DropdownMenuItem>
+                        <DropdownMenuItem>Follow @{post.author.name}</DropdownMenuItem>
+                        <DropdownMenuItem>Mute @{post.author.name}</DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive">Report post</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </CardHeader>
             <CardContent className="px-4 pb-3">
-                {/* <p className="text-foreground whitespace-pre-wrap leading-relaxed">{postContent?.content}</p> */}
-                <p className="text-foreground whitespace-pre-wrap leading-relaxed">{postData?.content}</p>
+                <p className="text-foreground whitespace-pre-wrap leading-relaxed">{post.content}</p>
+                {/* <p className="text-foreground whitespace-pre-wrap leading-relaxed">{postData?.content}</p> */}
                 {/* {post.image && (
           <div className="mt-3 overflow-hidden rounded-xl">
             <img

@@ -8,7 +8,7 @@ export default function FeedPage() {
       <Sidebar />
       <div className="flex flex-1 ml-20 lg:ml-64">
         <Feed />
-        <TrendingSidebar />
+        {/* <TrendingSidebar /> */}
       </div>
     </div>
   )

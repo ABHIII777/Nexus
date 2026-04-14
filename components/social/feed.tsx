@@ -9,26 +9,6 @@ import { PenSquare } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
-// const posts = [
-//   {
-//     id: "1",
-//     author: {
-//       name: "Sarah Chen",
-//       username: "sarahchen",
-//       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-//       verified: true,
-//     },
-//     content: "Just shipped a major update to our design system! 🚀\n\nNew components include:\n• Improved dark mode support\n• Better accessibility features\n• Performance optimizations\n\nCheck it out and let me know what you think!",
-//     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=400&fit=crop",
-//     // likes: 1243,
-//     // comments: 89,
-//     // reposts: 156,
-//     timestamp: "2h",
-//     // isLiked: false,
-//     // isBookmarked: false,
-//   }
-// ]
-
 export function Feed() {
 
   const [showCompose, setShowCompose] = useState(false);
@@ -41,19 +21,12 @@ export function Feed() {
 
     const user = JSON.parse(storedUser);
 
-    console.log(user);
-
-    // fetch(`/api/feed?userID=${user.id}`)
-    //   .then(res => res.json())
-    //   .then(data => setPost(data))
-
     fetch("/api/feed")
       .then(res => res.json())
       .then(data => setPost(data))
 
   }, []);
 
-  console.log(post);
 
   return (
     <div className="flex-1 w-full border-x border-border min-h-screen">
