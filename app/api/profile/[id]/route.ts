@@ -17,6 +17,5 @@ export async function GET(
         }
     })
 
-    console.log(userData);
     return NextResponse.json(userData);
 }

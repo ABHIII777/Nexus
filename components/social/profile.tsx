@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { User, MapPin, Calendar, Link as LinkIcon, Edit2, Camera, MoreHorizontal, CheckCircle, UsersIcon } from "lucide-react";
 import { PostCard } from "./post-card";
 import { useParams } from "next/navigation";
@@ -6,26 +7,20 @@ import { useParams } from "next/navigation";
 export default function ProfilePage() {
 
     const [user, setUser] = useState<any>(null);
-    const [post, setPost] = useState<any[]>([]);
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUserId, setCurrentUserid] = useState<any>(null);
 
-    const params = useParams()
+    const router = useRouter();
+    const params = useParams();
     const userId = params.id;
 
-    useEffect(() => {
-        fetch(`/api/profile/${userId}`)
-            .then(res => res.json())
-            .then(data => setUser(data))
-    }, [userId])
-    
+    // 1. Fetch current user from localStorage to identify the viewer
     useEffect(() => {
         const storedUser = localStorage.getItem("user")
-
         if (storedUser) {
             try {
                 const parsed = JSON.parse(storedUser);
-                if (parsed && parsed.name) {
-                    setCurrentUser(parsed);
+                if (parsed && parsed.id) {
+                    setCurrentUserid(parsed.id);
                 }
             } catch (e) {
                 console.error("Failed to parse user from local storage", e);
@@ -33,10 +28,30 @@ export default function ProfilePage() {
         }
     }, []);
 
-    console.log(user);
+    // 2. Authorization Redirect: Force user to their own profile URL
+    useEffect(() => {
+        if (currentUserId && userId && Number(currentUserId) !== Number(userId)) {
+            router.push("/profile/" + currentUserId);
+        }
+    }, [currentUserId, userId, router]);
 
-    if (!user) return <div>Loading.....</div>
+    // 3. Data Sync: Fetch specific profile data based on the current URL
+    useEffect(() => {
+        if (userId) {
+            fetch(`/api/profile/${userId}`)
+                .then(res => res.json())
+                .then(data => setUser(data))
+                .catch(err => console.error("Fetch error:", err));
+        }
+    }, [userId]);
 
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-primary animate-pulse font-medium italic">Loading Profile...</div>
+            </div>
+        );
+    }
 
   return (
     <div className="min-h-screen bg-background text-foreground border-x border-border">
@@ -111,13 +126,25 @@ export default function ProfilePage() {
 
         {/* Posts */}
         <div className="mt-4 space-y-4 pb-12">
-          <div className="space-y-4">
-            {user && user.posts.map((post: any) => (
-                <div key={post.id}>
-                <p>{post.content}</p>
-                </div>
-            ))}
-          </div>
+          {user.posts && user.posts.length > 0 ? (
+              user.posts.map((postData: any) => (
+                <PostCard 
+                  key={postData.id} 
+                  post={{
+                      ...postData,
+                      author: {
+                          name: user.name,
+                          avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+                          verified: true
+                      }
+                  }} 
+                />
+              ))
+          ) : (
+              <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                  No posts yet.
+              </div>
+          )}
         </div>
       </div>
     </div>

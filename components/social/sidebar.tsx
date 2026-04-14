@@ -61,10 +61,15 @@ export function Sidebar() {
       <nav className="flex flex-1 flex-col gap-1 w-full">
         {navItems.map((item) => {
           const isActive = pathname === item.href
+          // Dynamic profile link
+          const href = item.label === "Profile" && user?.id 
+            ? `/profile/${user.id}` 
+            : item.href
+
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={href}
               className={cn(
                 "group relative flex items-center gap-4 rounded-xl px-3 py-3 text-muted-foreground transition-all hover:bg-secondary hover:text-foreground lg:justify-start justify-center",
                 isActive && "bg-secondary text-foreground"
