@@ -70,8 +70,12 @@ export default function ProfilePage() {
       {/* Profile header */}
       <div className="mx-auto max-w-2xl px-4">
         <div className="relative -mt-16 flex items-end justify-between">
-          <div className="flex h-32 w-32 items-center justify-center rounded-full bg-secondary border-4 border-background shadow-xl ring-2 ring-primary/20">
-            <User className="h-16 w-16 text-muted-foreground" />
+          <div className="flex h-32 w-32 items-center justify-center rounded-full bg-secondary border-4 border-background shadow-xl ring-2 ring-primary/20 overflow-hidden">
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+            ) : (
+              <User className="h-16 w-16 text-muted-foreground" />
+            )}
           </div>
           <button 
             className="mb-2 flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
@@ -141,7 +145,7 @@ export default function ProfilePage() {
                       ...postData,
                       author: {
                           name: user.name,
-                          avatar: null,
+                          avatar: user.avatar,
                           verified: true
                       }
                   }} 
