@@ -6,7 +6,7 @@ import { ArrowLeft, Camera, User, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import { Sidebar } from "./sidebar";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -77,7 +77,7 @@ export default function EditProfilePage() {
     try {
         let avatarUrl = avatarPreview;
 
-        // 1. Upload file if selected
+
         if (selectedFile) {
             const formData = new FormData();
             formData.append("file", selectedFile);
@@ -95,7 +95,6 @@ export default function EditProfilePage() {
             }
         }
 
-        // 2. Update profile
         const updateRes = await fetch(`/api/profile/${currentUserId}`, {
             method: "PATCH",
             headers: {
@@ -111,7 +110,6 @@ export default function EditProfilePage() {
         });
 
         if (updateRes.ok) {
-            // 3. Update local storage to keep session in sync
             const storedUser = localStorage.getItem("user");
             if (storedUser) {
                 const parsed = JSON.parse(storedUser);
@@ -142,7 +140,9 @@ export default function EditProfilePage() {
   }
 
   return (
+
     <div className="min-h-screen bg-background text-foreground border-x border-border max-w-2xl mx-auto">
+      <Sidebar />
       {/* Top bar */}
       <div className="sticky top-0 z-20 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="flex items-center gap-6">
@@ -166,7 +166,6 @@ export default function EditProfilePage() {
         </button>
       </div>
 
-      {/* Banner upload */}
       <div
         className="relative h-48 md:h-56 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border-b border-border"
         style={{
@@ -200,7 +199,6 @@ export default function EditProfilePage() {
         />
       </div>
 
-      {/* Avatar upload */}
       <div className="px-4">
         <div className="relative -mt-16 inline-block">
           <div
@@ -225,7 +223,6 @@ export default function EditProfilePage() {
           />
         </div>
 
-        {/* Form fields */}
         <div className="mt-8 space-y-8 pb-12">
           <FieldGroup label="Name">
             <Input

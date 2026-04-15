@@ -13,7 +13,6 @@ export default function ProfilePage() {
     const params = useParams();
     const userId = params.id;
 
-    // 1. Fetch current user from localStorage to identify the viewer
     useEffect(() => {
         const storedUser = localStorage.getItem("user")
         if (storedUser) {
@@ -28,14 +27,12 @@ export default function ProfilePage() {
         }
     }, []);
 
-    // 2. Authorization Redirect: Force user to their own profile URL
     useEffect(() => {
         if (currentUserId && userId && Number(currentUserId) !== Number(userId)) {
             router.push("/profile/" + currentUserId);
         }
     }, [currentUserId, userId, router]);
 
-    // 3. Data Sync: Fetch specific profile data based on the current URL
     useEffect(() => {
         if (userId) {
             fetch(`/api/profile/${userId}`)
@@ -99,15 +96,15 @@ export default function ProfilePage() {
             </p>
           </div>
           <p className="text-sm leading-relaxed text-muted-foreground max-w-lg">
-            Welcome to my profile! This is a short bio about me. Passionate about building modern web applications and exploring new technologies.
+            {user?.bio}
           </p>
           <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" /> Somewhere
+              <MapPin className="h-4 w-4" /> {user?.location || "Somewhere"}
             </span>
             <span className="flex items-center gap-1">
               <LinkIcon className="h-4 w-4 text-primary" />
-              <span className="text-primary hover:underline cursor-pointer transition">example.com</span>
+              <span className="text-primary hover:underline cursor-pointer transition">{user?.website || "example.com"}</span>
             </span>
             <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" /> Joined April 2026
