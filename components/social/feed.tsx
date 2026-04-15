@@ -59,7 +59,7 @@ export function Feed() {
         </div>
 
         <Button
-          className="w-auto gap-2 rounded-xl hidden lg:flex fixed top-[92%] left-[72%]"
+          className="w-auto gap-2 rounded-xl hidden lg:flex fixed top-[92%] left-[90%]"
           size="lg"
           onClick={() => setShowCompose(!showCompose)}
         >
