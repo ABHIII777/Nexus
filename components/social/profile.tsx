@@ -53,6 +53,10 @@ export default function ProfilePage() {
         );
     }
 
+    const editPageNavigate = () => {
+      router.push("/edit-profile")
+    }
+
   return (
     <div className="min-h-screen bg-background text-foreground border-x border-border">
       {/* Cover / Banner */}
@@ -69,7 +73,10 @@ export default function ProfilePage() {
           <div className="flex h-32 w-32 items-center justify-center rounded-full bg-secondary border-4 border-background shadow-xl ring-2 ring-primary/20">
             <User className="h-16 w-16 text-muted-foreground" />
           </div>
-          <button className="mb-2 flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10">
+          <button 
+            className="mb-2 flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
+            onClick={editPageNavigate}
+            >
             <Edit2 className="h-4 w-4" />
             Edit Profile
           </button>
@@ -134,7 +141,7 @@ export default function ProfilePage() {
                       ...postData,
                       author: {
                           name: user.name,
-                          avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+                          avatar: null,
                           verified: true
                       }
                   }} 

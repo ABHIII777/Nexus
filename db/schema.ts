@@ -6,6 +6,10 @@ export const users = pgTable("users", {
     name: text("name").notNull().unique(),
     email: text("email").notNull().unique(),
     password: text("password").notNull().unique(),
+    avatar: text("avatar"),
+    bio: text("bio"),
+    location: text("location"),
+    website: text("website")
 });
 
 export const posts = pgTable("posts", {
