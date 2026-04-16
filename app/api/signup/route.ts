@@ -16,10 +16,6 @@ export async function POST(req: Request) {
 
     const { email, password, name } = parsed.data;
 
-    if(!name || !email || !password) {
-         return NextResponse.json({error: "Missing Fields"}, {status: 400});
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
