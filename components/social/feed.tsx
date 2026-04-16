@@ -59,7 +59,8 @@ export function Feed() {
         </div>
 
         <Button
-          className="w-[140px] gap-2 rounded-xl hidden lg:flex fixed bottom-8 right-8 shadow-2xl shadow-primary/40 hover:scale-105 transition-transform"
+          className="flex w-[140px] gap-2 rounded-xl fixed bottom-8 right-8 shadow-2xl shadow-primary/40 hover:scale-105 transition-transform z-50"
+          // className="flex w-[140px] gap-2 rounded-xl shadow-2xl"
           size="lg"
           onClick={() => setShowCompose(!showCompose)}
         >

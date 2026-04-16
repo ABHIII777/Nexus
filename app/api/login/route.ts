@@ -3,9 +3,18 @@ import { users } from "@/db/schema"
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server"
 import bcrypt from "bcrypt";
+import { loginSchema } from "@/lib/validators";
+import { signToken } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
     const body = await req.json();
+
+    const parsed = loginSchema.safeParse(body);
+
+    if(!parsed.success) {
+        return NextResponse.json({error: parsed.error}, {status: 400});
+    }
 
     const {email, password} = body;
 
@@ -23,10 +32,16 @@ export async function POST(req: Request) {
         return NextResponse.json({error: "Invalid credentials"}, {status: 400})
     }
 
+    const token = signToken({userId: user.id});
+
+    (await cookies()).set("token", token, {
+        httpOnly: true,
+        secure: true,
+        path: "/"
+    })
+
     return NextResponse.json({
-        message: "Login Successfull",
-        id: user.id,
-        name: user.name
+        message: "Logged in !"
     });
 
 }

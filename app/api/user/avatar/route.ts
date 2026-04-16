@@ -6,7 +6,8 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     const { userId, avatarUrl} = await req.json();
 
-    await db.update(users).set({avatar: avatarUrl}).where(eq(users.id, userId))
+    // avatar column dropped, will be moved to a different table later
+    // await db.update(users).set({avatar: avatarUrl}).where(eq(users.id, userId))
 
     return NextResponse.json({success: true})
 }
