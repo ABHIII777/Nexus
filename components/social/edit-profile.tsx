@@ -31,7 +31,6 @@ export default function EditProfilePage() {
         const parsed = JSON.parse(storedUser);
         if (parsed && parsed.id) {
           setCurrentUserId(parsed.id);
-          // Fetch full profile data from API to ensure we have latest
           fetch(`/api/profile/${parsed.id}`)
             .then(res => res.json())
             .then(data => {
@@ -143,7 +142,6 @@ export default function EditProfilePage() {
 
     <div className="min-h-screen bg-background text-foreground border-x border-border max-w-2xl mx-auto">
       <Sidebar />
-      {/* Top bar */}
       <div className="sticky top-0 z-20 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="flex items-center gap-6">
           <button 
