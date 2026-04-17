@@ -35,7 +35,6 @@ export default function SignupPage() {
     });
 
     const res = await data.json();
-    console.log(res);
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
     setIsLoading(false)

@@ -14,17 +14,18 @@ export default function ProfilePage() {
     const userId = params.id;
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user")
-        if (storedUser) {
+        const fetchMe = async() => {
             try {
-                const parsed = JSON.parse(storedUser);
-                if (parsed && parsed.id) {
-                    setCurrentUserid(parsed.id);
+                const res = await fetch("/api/user/me");
+                if (res.ok ) {
+                    const data = await res.json();
+                    setCurrentUserid(data.id);
                 }
-            } catch (e) {
-                console.error("Failed to parse user from local storage", e);
+            } catch (err) {
+                console.error(err);
             }
         }
+        fetchMe();
     }, []);
 
     useEffect(() => {
@@ -41,6 +42,8 @@ export default function ProfilePage() {
                 .catch(err => console.error("Fetch error:", err));
         }
     }, [userId]);
+
+    console.log(user);
 
     if (!user) {
         return (
@@ -74,7 +77,7 @@ export default function ProfilePage() {
               <User className="h-16 w-16 text-muted-foreground" />
             )}
           </div>
-          <button 
+          <button
             className="mb-2 flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
             onClick={editPageNavigate}
             >
@@ -136,8 +139,8 @@ export default function ProfilePage() {
         <div className="mt-4 space-y-4 pb-12">
           {user.posts && user.posts.length > 0 ? (
               user.posts.map((postData: any) => (
-                <PostCard 
-                  key={postData.id} 
+                <PostCard
+                  key={postData.id}
                   post={{
                       ...postData,
                       author: {
@@ -145,7 +148,7 @@ export default function ProfilePage() {
                           avatar: user.avatar,
                           verified: true
                       }
-                  }} 
+                  }}
                 />
               ))
           ) : (
