@@ -31,126 +31,139 @@ interface PostProps {
           verified?: boolean
         }
         content: string
-        // image?: string
-        // likes: number
-        // comments: number
-        // reposts: number
+        image?: string
+        likes: number
+        comments: number
+        reposts: number
         timestamp: string
-        // isLiked?: boolean
-        // isBookmarked?: boolean
+        isLiked?: boolean
+        isBookmarked?: boolean
     }
 }
 
-export function PostCard({post}: PostProps) {
-
-    const [user, setUser] = useState<{ name: string } | null>(null);
-    const [feedData, setFeedData] = useState<{id: number, name: string, content: string} | null>(null);
-
-    useEffect(() => {
-      fetch("/api/feed")
-        .then(res => res.json())
-        .then(data => setFeedData(data))
-    }, [])
+export function PostCard({ post }: PostProps) {
+    const [isLiked, setIsLiked] = useState(post.isLiked || false);
+    const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
+    const [likes, setLikes] = useState(post.likes);
 
     return (
-        <Card className="border-border bg-card hover:bg-secondary/30 transition-colors">
-            <CardHeader className="flex flex-row items-start gap-4 p-4">
-                <Avatar className="h-12 w-12">
-                    <AvatarImage src={post.author.avatar} alt={post.author.name} />
-                    {/* <AvatarFallback>{feedData?.name}</AvatarFallback> */}
-                    {/* <AvatarFallback>{console.log(user[0]?.name)}</AvatarFallback> */}
-                </Avatar>
-                <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                        <span className="font-semibold text-foreground hover:underline cursor-pointer">
-                            {post.author.name}
-                        </span>
-                        {post.author.name && (
-                            <Verified className="h-4 w-4 fill-primary text-primary-foreground" />
-                        )}
-                        <span className="text-muted-foreground">@{post.author.name}</span>
-                        <span className="text-muted-foreground">·</span>
-                        <span className="text-muted-foreground text-sm">{}</span>
+        <Card className="border-border bg-card hover:bg-secondary/20 transition-all duration-200 border-none shadow-none rounded-none border-b border-border/50 first:border-t">
+            <div className="flex flex-row gap-3 p-4">
+                {/* Avatar Column */}
+                <div className="flex flex-col items-center">
+                    <Avatar className="h-11 w-11 transition-opacity hover:opacity-90 cursor-pointer">
+                        <AvatarImage src={post.author.avatar} alt={post.author.name} />
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                          {post.author.name.charAt(0)}
+                        </AvatarFallback>
+                    </Avatar>
+                </div>
+
+                {/* Content Column */}
+                <div className="flex-1 flex flex-col min-w-0">
+                    {/* Header */}
+                    <div className="flex items-center justify-between gap-1 mb-0.5">
+                        <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+                            <span className="font-bold text-[15px] text-foreground hover:underline cursor-pointer truncate">
+                                {post.author.name}
+                            </span>
+                            {post.author.verified && (
+                                <Verified className="h-[15px] w-[15px] fill-primary text-primary-foreground shrink-0" />
+                            )}
+                            <span className="text-muted-foreground text-[14px] truncate">@{post.author.name.toLowerCase().replace(/\s+/g, '')}</span>
+                            <span className="text-muted-foreground text-[14px]">·</span>
+                            <span className="text-muted-foreground text-[14px] hover:underline cursor-pointer">1h</span>
+                        </div>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-full transition-colors">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 rounded-xl">
+                                <DropdownMenuItem className="gap-2">Not interested</DropdownMenuItem>
+                                <DropdownMenuItem className="gap-2">Follow @{post.author.name}</DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive gap-2">Report post</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+
+                    {/* Text Content */}
+                    <p className="text-[15px] text-foreground whitespace-pre-wrap leading-normal mb-3">
+                        {post.content}
+                    </p>
+
+                    {/* Media Placeholder (Optional) */}
+                    {post.image && (
+                        <div className="mb-3 rounded-2xl overflow-hidden border border-border">
+                            <img src={post.image} alt="post" className="w-full object-cover max-h-[512px]" />
+                        </div>
+                    )}
+
+                    {/* Action Buttons Row */}
+                    <div className="flex items-center justify-between -ml-2 max-w-md">
+                        {/* Comment */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="group flex items-center gap-2 text-muted-foreground hover:text-sky-500 hover:bg-sky-500/10 rounded-full h-9 px-3 transition-all"
+                        >
+                            <MessageCircle className="h-[18px] w-[18px] group-active:scale-90 transition-transform" />
+                            <span className="text-xs font-medium">{post.comments}</span>
+                        </Button>
+
+                        {/* Repost */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="group flex items-center gap-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full h-9 px-3 transition-all"
+                        >
+                            <Repeat2 className="h-[18px] w-[18px] group-active:scale-90 transition-transform" />
+                            <span className="text-xs font-medium">{post.reposts}</span>
+                        </Button>
+
+                        {/* Like */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                                setIsLiked(!isLiked);
+                                setLikes(isLiked ? likes - 1 : likes + 1);
+                            }}
+                            className={cn(
+                                "group flex items-center gap-2 rounded-full h-9 px-3 transition-all",
+                                isLiked ? "text-rose-500 hover:bg-rose-500/10" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"
+                            )}
+                        >
+                            <Heart className={cn("h-[18px] w-[18px] transition-all group-active:scale-125", isLiked && "fill-current")} />
+                            <span className="text-xs font-medium">{likes}</span>
+                        </Button>
+
+                        {/* Bookmark & Share */}
+                        <div className="flex items-center">
+                             <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setIsBookmarked(!isBookmarked)}
+                                className={cn(
+                                    "group p-2 rounded-full transition-all h-9 w-9",
+                                    isBookmarked ? "text-sky-500 hover:bg-sky-500/10" : "text-muted-foreground hover:text-sky-500 hover:bg-sky-500/10"
+                                )}
+                            >
+                                <Bookmark className={cn("h-[18px] w-[18px] transition-all group-active:scale-90", isBookmarked && "fill-current")} />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="group p-2 rounded-full text-muted-foreground hover:text-sky-500 hover:bg-sky-500/10 transition-all h-9 w-9"
+                            >
+                                <Share className="h-[18px] w-[18px] group-active:scale-90 transition-all" />
+                            </Button>
+                        </div>
                     </div>
                 </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem>Not interested</DropdownMenuItem>
-                        <DropdownMenuItem>Follow @{post.author.name}</DropdownMenuItem>
-                        <DropdownMenuItem>Mute @{post.author.name}</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">Report post</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </CardHeader>
-            <CardContent className="px-4 pb-3">
-                <p className="text-foreground whitespace-pre-wrap leading-relaxed">{post.content}</p>
-                {/* <p className="text-foreground whitespace-pre-wrap leading-relaxed">{postData?.content}</p> */}
-                {/* {post.image && (
-          <div className="mt-3 overflow-hidden rounded-xl">
-            <img
-              // src={post.image}
-              alt="Post attachment"
-              // className="w-full object-cover max-h-96 hover:opacity-90 transition-opacity cursor-pointer"
-              className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
-            />
-          </div>
-        )} */}
-            </CardContent>
-            {/* <CardFooter className="flex items-center justify-between px-4 pb-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-2 text-muted-foreground hover:text-primary hover:bg-primary/10"
-        >
-          <MessageCircle className="h-5 w-5" />
-          <span>{post.comments}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-2 text-muted-foreground hover:text-green-500 hover:bg-green-500/10"
-        >
-          <Repeat2 className="h-5 w-5" />
-          <span>{post.reposts}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className={cn(
-            "gap-2 hover:bg-red-500/10",
-            isLiked ? "text-red-500" : "text-muted-foreground hover:text-red-500"
-          )}
-          onClick={handleLike}
-        >
-          <Heart className={cn("h-5 w-5", isLiked && "fill-current")} />
-          <span>{likes}</span>
-        </Button>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-primary hover:bg-primary/10"
-          >
-            <Share className="h-5 w-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "hover:bg-primary/10",
-              isBookmarked ? "text-primary" : "text-muted-foreground hover:text-primary"
-            )}
-            onClick={() => setIsBookmarked(!isBookmarked)}
-          >
-            <Bookmark className={cn("h-5 w-5", isBookmarked && "fill-current")} />
-          </Button>
-        </div>
-      </CardFooter> */}
+            </div>
         </Card>
-    )
+    );
 }
