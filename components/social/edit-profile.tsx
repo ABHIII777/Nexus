@@ -36,14 +36,14 @@ export default function EditProfilePage() {
 
                 const meData = await meRes.ok ? await meRes.json() : null;
 
-                if (!meData.ok) {
+                if (!meData.id || !meData) {
                     setIsFetching(false);
                     return;
                 }
 
                 setCurrentUserId(meData.id)
 
-                const profileRes = await fetch(`api/profile/${meData.id}`);
+                const profileRes = await fetch(`/api/profile/${meData.id}`);
                 if (profileRes.ok) {
                     const data = await profileRes.json();
                     setName(data.name || "");
