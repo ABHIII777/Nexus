@@ -1,11 +1,11 @@
 import { db } from "@/db";
-import { users } from "@/db/schema"
+import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params } : { params: Promise<{id: string}>}
 ) {
     const { id } = await params;
     const userID = Number(id);
@@ -16,6 +16,8 @@ export async function GET(
             posts: true
         }
     })
+
+    console.log(userData);
 
     return NextResponse.json(userData);
 }
@@ -36,7 +38,7 @@ export async function PATCH(
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error("Failed to update profile:", error);
-        return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
+        console.error("Failed to update edit-profile:", error);
+        return NextResponse.json({ error: "Failed to update edit-profile" }, { status: 500 });
     }
 }

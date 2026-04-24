@@ -12,6 +12,7 @@ export default function ProfilePage() {
     const router = useRouter();
     const params = useParams();
     const userId = params.id;
+    console.log(userId)
 
     useEffect(() => {
         const fetchMe = async() => {
@@ -54,7 +55,7 @@ export default function ProfilePage() {
     }
 
     const editPageNavigate = () => {
-      router.push("/edit-profile")
+      router.push(`/edit-profile/` + user.id);
     }
 
   return (

@@ -2,14 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Camera, User, X, Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { ArrowLeft, Camera, User, X, Loader2, Pencil, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sidebar } from "./sidebar";
+import MockPosts from "./mock-post";
 
 export default function EditProfilePage() {
-    const router = useRouter();
     const [name, setName] = useState("");
     const [bio, setBio] = useState("");
     const [location, setLocation] = useState("");
@@ -20,9 +21,64 @@ export default function EditProfilePage() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
+    
+    const [editingPostId, setEditingPostId] = useState<string | null>(null);
+    const [editContent, setEditContent] = useState("");
+
+    const [mockPosts, setMockPosts] = useState([
+        {
+            id: "1",
+            content: "Just setting up my Nexus profile! Excited to connect with everyone here. 🚀",
+            createdAt: "2 hours ago"
+        },
+        {
+            id: "2",
+            content: "Working on some exciting new features for the platform. Can't wait to share them with you all! 💻✨",
+            createdAt: "1 day ago"
+        }
+    ]);
 
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const bannerInputRef = useRef<HTMLInputElement>(null);
+
+
+    const [user, setUser] = useState<any>(null);
+    const [currentId, setCurrentid] = useState<any>(null);
+
+    const Router = useRouter();
+    const params = useParams();
+    const userId = params.id;
+
+    useEffect(() => {
+        const fetchMe = async() => {
+            try {
+                const res = await fetch("/api/user/me");
+                if (res.ok ) {
+                    const data = await res.json();
+                    console.log(data)
+                    setCurrentid(data.id);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        fetchMe();
+    }, []);
+
+    useEffect(() => {
+        if (currentId && userId && Number(currentId) !== Number(userId)) {
+            Router.push("/edit-profile/" + currentId);
+        } 
+    }, [currentId, userId, Router]);
+
+    useEffect(() => {
+        if (userId) {
+            fetch(`/api/edit-profile/${userId}`)
+                .then(res => res.json())
+                .then(data => setUser(data))
+                .catch(err => console.error("Fetch error:", err));
+        } 
+    }, [userId]);
 
     useEffect(() => {
         const initialize = async () => {
@@ -43,7 +99,7 @@ export default function EditProfilePage() {
 
                 setCurrentUserId(meData.id)
 
-                const profileRes = await fetch(`/api/profile/${meData.id}`);
+                const profileRes = await fetch(`/api/edit-profile/${userId}`);
                 if (profileRes.ok) {
                     const data = await profileRes.json();
                     setName(data.name || "");
@@ -124,8 +180,8 @@ export default function EditProfilePage() {
                     localStorage.setItem("user", JSON.stringify(updatedUser));
                 }
 
-                router.push(`/profile/${currentUserId}`);
-                router.refresh();
+                Router.push(`/profile/${currentUserId}`);
+                Router.refresh();
             } else {
                 const error = await updateRes.json();
                 alert(error.error || "Failed to update profile");
@@ -153,7 +209,7 @@ export default function EditProfilePage() {
             <div className="sticky top-0 z-20 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-md border-b border-border">
                 <div className="flex items-center gap-6">
                     <button
-                        onClick={() => router.back()}
+                        onClick={() => Router.back()}
                         className="p-2 rounded-full hover:bg-secondary transition-colors"
                     >
                         <ArrowLeft className="h-5 w-5" />
@@ -277,6 +333,83 @@ export default function EditProfilePage() {
                         />
                     </FieldGroup>
                 </div>
+
+                <MockPosts post={user}/>
+                
+                {/* <div className="mt-12 pt-8 border-t border-border pb-12">
+                    <h2 className="text-xl font-bold tracking-tight mb-6 flex items-center gap-2">
+                        Manage Posts
+                        <span className="text-sm font-normal text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded-full">{mockPosts.length}</span>
+                    </h2>
+                    <div className="space-y-4">
+                        {mockPosts.length === 0 ? (
+                            <div className="text-center py-8 text-muted-foreground bg-secondary/20 rounded-xl border border-dashed border-border">
+                                No posts to manage.
+                            </div>
+                        ) : (
+                            mockPosts.map(post => (
+                                <div key={post.id} className="p-4 border border-border rounded-xl bg-secondary/10 hover:bg-secondary/20 transition-colors flex flex-col gap-3 group">
+                                    {editingPostId === post.id ? (
+                                        <div className="flex flex-col gap-3">
+                                            <Textarea 
+                                                value={editContent}
+                                                onChange={(e) => setEditContent(e.target.value)}
+                                                className="resize-none min-h-[100px] text-sm bg-background border-border"
+                                                placeholder="Edit your post..."
+                                            />
+                                            <div className="flex justify-end gap-2">
+                                                <button 
+                                                    className="px-4 py-1.5 text-xs font-bold bg-secondary text-secondary-foreground rounded-full hover:opacity-90 transition-opacity"
+                                                    onClick={() => {
+                                                        setEditingPostId(null);
+                                                        setEditContent("");
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button 
+                                                    className="px-4 py-1.5 text-xs font-bold bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity"
+                                                    onClick={() => {
+                                                        setMockPosts(posts => posts.map(p => p.id === post.id ? { ...p, content: editContent } : p));
+                                                        setEditingPostId(null);
+                                                    }}
+                                                >
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="flex justify-between items-start gap-4">
+                                                <p className="text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+                                                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                                                    <button 
+                                                        className="p-2 text-muted-foreground hover:text-primary transition-colors hover:bg-primary/10 rounded-full" 
+                                                        title="Edit post"
+                                                        onClick={() => {
+                                                            setEditingPostId(post.id);
+                                                            setEditContent(post.content);
+                                                        }}
+                                                    >
+                                                        <Pencil className="h-4 w-4" />
+                                                    </button>
+                                                    <button 
+                                                        className="p-2 text-muted-foreground hover:text-destructive transition-colors hover:bg-destructive/10 rounded-full" 
+                                                        title="Delete post"
+                                                        onClick={() => setMockPosts(posts => posts.filter(p => p.id !== post.id))}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <span className="text-xs text-muted-foreground">{post.createdAt}</span>
+                                        </>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div> */}
             </div>
         </div>
     );
