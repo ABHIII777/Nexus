@@ -20,6 +20,8 @@ export function Feed() {
       .catch(err => console.error("Failed to fetch feed:", err));
   }, []);
 
+  console.log(post);
+
   return (
     <div className="flex-1 w-full border-x border-border min-h-screen">
       <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-md">

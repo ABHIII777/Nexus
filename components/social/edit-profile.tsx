@@ -21,7 +21,7 @@ export default function EditProfilePage() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
-    
+
     const [editingPostId, setEditingPostId] = useState<string | null>(null);
     const [editContent, setEditContent] = useState("");
 
@@ -50,10 +50,10 @@ export default function EditProfilePage() {
     const userId = params.id;
 
     useEffect(() => {
-        const fetchMe = async() => {
+        const fetchMe = async () => {
             try {
                 const res = await fetch("/api/user/me");
-                if (res.ok ) {
+                if (res.ok) {
                     const data = await res.json();
                     console.log(data)
                     setCurrentid(data.id);
@@ -68,7 +68,7 @@ export default function EditProfilePage() {
     useEffect(() => {
         if (currentId && userId && Number(currentId) !== Number(userId)) {
             Router.push("/edit-profile/" + currentId);
-        } 
+        }
     }, [currentId, userId, Router]);
 
     useEffect(() => {
@@ -77,7 +77,7 @@ export default function EditProfilePage() {
                 .then(res => res.json())
                 .then(data => setUser(data))
                 .catch(err => console.error("Fetch error:", err));
-        } 
+        }
     }, [userId]);
 
     useEffect(() => {
@@ -334,8 +334,33 @@ export default function EditProfilePage() {
                     </FieldGroup>
                 </div>
 
-                <MockPosts post={user}/>
-                
+                <h2 className="text-xl font-bold tracking-tight mb-6 flex items-center gap-2">
+                    Manage Posts
+                    <span className="text-sm font-normal text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded-full">{mockPosts.length}</span>
+                </h2>
+
+                <div className="">
+                    {user.posts && user.posts.length > 0 ? (
+                        user.posts.map((userData) => (
+                            <MockPosts
+                                key={userData.id}
+                                post={{
+                                    ...userData,
+                                    author: {
+                                        name: user.name,
+                                        avatar: user.avatar,
+                                        verified: true
+                                    }
+                                }}
+                            />
+                        ))
+                    ) : (
+                        <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                            No posts yet
+                        </div>
+                    )}
+                </div>
+
                 {/* <div className="mt-12 pt-8 border-t border-border pb-12">
                     <h2 className="text-xl font-bold tracking-tight mb-6 flex items-center gap-2">
                         Manage Posts
