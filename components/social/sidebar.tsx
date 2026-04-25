@@ -53,8 +53,6 @@ export function Sidebar() {
         fetchUser();
     }, [])
 
-    console.log(user)
-
     return (
         <aside className="fixed left-0 top-0 z-40 flex h-screen w-20 flex-col items-center border-r border-border bg-sidebar py-6 lg:w-64 lg:items-start lg:px-4">
             <Link href="/" className="mb-8 flex items-center gap-3 px-3">
@@ -96,20 +94,6 @@ export function Sidebar() {
             <Button className="mb-4 lg:hidden rounded-xl" size="icon">
                 <PenSquare className="h-5 w-5" />
             </Button>
-
-            <div className="flex w-full items-center gap-3 rounded-xl p-3 hover:bg-secondary cursor-pointer transition-colors">
-                <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" />
-                    <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                {user && (
-                    <div className="hidden flex-1 lg:block">
-                        <p className="text-sm font-medium text-foreground">{user.name}</p>
-                        <p className="text-xs text-muted-foreground">@{user.name}</p>
-                    </div>
-                )}
-                <MoreHorizontal className="hidden h-5 w-5 text-muted-foreground lg:block" />
-            </div>
         </aside>
     )
 }

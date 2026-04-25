@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { Pencil, Trash2 } from "lucide-react"
+import { posts } from "@/db/schema"
 
 interface MockProps {
     post: {
@@ -29,10 +30,41 @@ export default function MockPosts({ post }: MockProps) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [editContent, setEditContent] = useState("");
+    const [authorID, setAuthorID] = useState<{id: number} | null>(null);
     const maxLength = 200;
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user")
+        if (!storedUser) return
+
+        const userID = JSON.parse(storedUser);
+
+        setAuthorID(userID.id);
+    })
+
+    console.log(authorID, editContent);
     
     const handleEdits = async() => {
+        try {
+            const data = await fetch("/api/posts", {
+                method: "PUT",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({ id: post.id, content: editContent })
+            });
 
+            if (data.ok) {
+                setIsEditing(false);
+                // optionally reload or update state to reflect change
+                window.location.reload(); 
+            } else {
+                const res = await data.json();
+                console.error("Failed to update:", res);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (

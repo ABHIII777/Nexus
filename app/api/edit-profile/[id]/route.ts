@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
     req: Request,
-    { params } : { params: Promise<{id: string}>}
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
     const userID = Number(id);
@@ -16,8 +16,6 @@ export async function GET(
             posts: true
         }
     })
-
-    console.log(userData);
 
     return NextResponse.json(userData);
 }
