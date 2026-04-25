@@ -41,7 +41,9 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json({
-        message: "Logged in !"
+        message: "Logged in !",
+        id: user.id,
+        name: user.name
     });
 
 }

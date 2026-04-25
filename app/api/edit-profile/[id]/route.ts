@@ -29,11 +29,11 @@ export async function PATCH(
     const { id } = await params;
     const userID = Number(id);
     const body = await req.json();
-    const { name } = body;
+    const { name, bio, website, location, avatar, banner } = body;
 
     try {
         await db.update(users)
-            .set({ name })
+            .set({ name, bio, website, location, avatar, banner })
             .where(eq(users.id, userID));
 
         return NextResponse.json({ success: true });

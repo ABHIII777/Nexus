@@ -18,7 +18,8 @@ export default function EditProfilePage() {
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [bannerPreview, setBannerPreview] = useState<string | null>(null);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [bannerFile, setBannerFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
 
@@ -123,13 +124,14 @@ export default function EditProfilePage() {
 
     const handleImageChange = (
         e: React.ChangeEvent<HTMLInputElement>,
-        setter: (url: string | null) => void
+        setPreview: (url: string | null) => void,
+        setFile: (file: File | null) => void
     ) => {
         const file = e.target.files?.[0];
         if (file) {
-            setSelectedFile(file);
+            setFile(file);
             const url = URL.createObjectURL(file);
-            setter(url);
+            setPreview(url);
         }
     };
 
@@ -139,11 +141,11 @@ export default function EditProfilePage() {
 
         try {
             let avatarUrl = avatarPreview;
+            let bannerUrl = bannerPreview;
 
-
-            if (selectedFile) {
+            if (avatarFile) {
                 const formData = new FormData();
-                formData.append("file", selectedFile);
+                formData.append("file", avatarFile);
 
                 const uploadRes = await fetch("/api/upload", {
                     method: "POST",
@@ -154,7 +156,24 @@ export default function EditProfilePage() {
                     const uploadData = await uploadRes.json();
                     avatarUrl = uploadData.url;
                 } else {
-                    console.error("Upload failed");
+                    console.error("Avatar upload failed");
+                }
+            }
+
+            if (bannerFile) {
+                const formData = new FormData();
+                formData.append("file", bannerFile);
+
+                const uploadRes = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    bannerUrl = uploadData.url;
+                } else {
+                    console.error("Banner upload failed");
                 }
             }
 
@@ -168,7 +187,8 @@ export default function EditProfilePage() {
                     bio,
                     location,
                     website,
-                    avatar: avatarUrl
+                    avatar: avatarUrl,
+                    banner: bannerUrl
                 }),
             });
 
@@ -204,7 +224,8 @@ export default function EditProfilePage() {
 
     return (
 
-        <div className="min-h-screen bg-background text-foreground border-x border-border max-w-2xl mx-auto">
+        // <div className="min-h-screen bg-background text-foreground border-x border-border max-w-2xl mx-auto">
+        <div className="min-h-screen bg-background text-foreground border-x border-border w-auto ml-[15%] mx-auto">
             <Sidebar />
             <div className="sticky top-0 z-20 flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-md border-b border-border">
                 <div className="flex items-center gap-6">
@@ -257,7 +278,7 @@ export default function EditProfilePage() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => handleImageChange(e, setBannerPreview)}
+                    onChange={(e) => handleImageChange(e, setBannerPreview, setBannerFile)}
                 />
             </div>
 
@@ -281,7 +302,7 @@ export default function EditProfilePage() {
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => handleImageChange(e, setAvatarPreview)}
+                        onChange={(e) => handleImageChange(e, setAvatarPreview, setAvatarFile)}
                     />
                 </div>
 

@@ -6,6 +6,11 @@ export const users = pgTable("users", {
     name: text("name").notNull().unique(),
     email: text("email").notNull().unique(),
     password: text("password").notNull().unique(),
+    bio: text("bio"),
+    website: text("website"),
+    location: text("location"),
+    avatar: text("avatar"),
+    banner: text("banner"),
 });
 
 export const posts = pgTable("posts", {

@@ -22,23 +22,35 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    const data = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: formData.email,
-        password: formData.password,
-      }),
-    });
+    try {
+      const data = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-    const res = await data.json();
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ id: res.id, name: res.name }),
-    );
+      const res = await data.json();
+      
+      if (!data.ok) {
+        alert(res.error || "Login failed. Please check your credentials.");
+        return;
+      }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    router.push("/feed");
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ id: res.id, name: res.name }),
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      router.push("/feed");
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An unexpected error occurred during login.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
