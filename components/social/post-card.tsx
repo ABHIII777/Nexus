@@ -44,7 +44,23 @@ interface PostProps {
 export function PostCard({ post }: PostProps) {
     const [isLiked, setIsLiked] = useState(post.isLiked || false);
     const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
-    const [likes, setLikes] = useState(post.likes);
+    const [likes, setLikes] = useState(post.likes || 0);
+
+    const handleLikes = async() => {
+        const newIsLiked = !isLiked;
+        const newLikes = newIsLiked ? likes + 1 : Math.max(0, likes - 1);
+
+        setIsLiked(newIsLiked);
+        setLikes(newLikes);
+
+        const data = await fetch("/api/post-card", {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({id: post.id, likes: newLikes})
+        });
+    }
 
     return (
         <Card className="border-border bg-card hover:bg-secondary/20 transition-all duration-200 border-none shadow-none rounded-none border-b border-border/50 first:border-t">
@@ -103,6 +119,23 @@ export function PostCard({ post }: PostProps) {
 
                     {/* Action Buttons Row */}
                     <div className="flex items-center justify-between -ml-2 max-w-md">
+                        {/* Like */}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            // onClick={() => {
+                            //     setIsLiked(!isLiked);
+                            //     setLikes(isLiked ? likes - 1 : likes + 1);
+                            // }}
+                            onClick={handleLikes}
+                            className={cn(
+                                "group flex items-center gap-2 rounded-full h-9 px-3 transition-all",
+                                isLiked ? "text-rose-500 hover:bg-rose-500/10" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"
+                            )}
+                        >
+                            <Heart className={cn("h-[18px] w-[18px] transition-all group-active:scale-125", isLiked && "fill-current")} />
+                            <span className="text-xs font-medium">{likes}</span>
+                        </Button>
                         {/* Comment */}
                         <Button
                             variant="ghost"
@@ -123,22 +156,6 @@ export function PostCard({ post }: PostProps) {
                             <span className="text-xs font-medium">{post.reposts}</span>
                         </Button>
 
-                        {/* Like */}
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                                setIsLiked(!isLiked);
-                                setLikes(isLiked ? likes - 1 : likes + 1);
-                            }}
-                            className={cn(
-                                "group flex items-center gap-2 rounded-full h-9 px-3 transition-all",
-                                isLiked ? "text-rose-500 hover:bg-rose-500/10" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"
-                            )}
-                        >
-                            <Heart className={cn("h-[18px] w-[18px] transition-all group-active:scale-125", isLiked && "fill-current")} />
-                            <span className="text-xs font-medium">{likes}</span>
-                        </Button>
 
                         {/* Bookmark & Share */}
                         <div className="flex items-center">

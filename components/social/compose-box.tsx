@@ -45,10 +45,6 @@ export function ComposeBox() {
     <Card className="border-border bg-card mb-6">
       <CardContent className="p-4">
         <div className="flex gap-4">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
           <div className="flex-1 space-y-4">
             <Textarea
               placeholder="What's happening?"

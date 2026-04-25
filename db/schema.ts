@@ -17,7 +17,9 @@ export const posts = pgTable("posts", {
     id: serial("id").primaryKey(),
     author: integer("author_id").references(() => users.id),
     content: text("content").notNull(),
-    createdAt: timestamp("created_at").defaultNow()
+    createdAt: timestamp("created_at").defaultNow(),
+    likes: integer("likes").default(0),
+    reposts: integer("reposts").default(0)
 })
 
 export const userRelations = relations(users, ({many}) => ({
