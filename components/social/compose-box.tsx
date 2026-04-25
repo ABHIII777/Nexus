@@ -35,7 +35,10 @@ export function ComposeBox() {
       body: JSON.stringify({content, authorId: authorID})
     });
 
-    const res = await data.json();
+    if (data.ok) {
+      setContent("");
+      window.location.reload();
+    }
   }
 
   return (

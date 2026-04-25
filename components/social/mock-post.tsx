@@ -5,6 +5,8 @@ import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 import { posts } from "@/db/schema"
+import { id } from "date-fns/locale"
+import { useRouter } from "next/navigation"
 
 interface MockProps {
     post: {
@@ -32,6 +34,7 @@ export default function MockPosts({ post }: MockProps) {
     const [editContent, setEditContent] = useState("");
     const [authorID, setAuthorID] = useState<{id: number} | null>(null);
     const maxLength = 200;
+    const router = useRouter();
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user")
@@ -42,8 +45,6 @@ export default function MockPosts({ post }: MockProps) {
         setAuthorID(userID.id);
     })
 
-    console.log(authorID, editContent);
-    
     const handleEdits = async() => {
         try {
             const data = await fetch("/api/posts", {
@@ -56,11 +57,31 @@ export default function MockPosts({ post }: MockProps) {
 
             if (data.ok) {
                 setIsEditing(false);
-                // optionally reload or update state to reflect change
                 window.location.reload(); 
             } else {
                 const res = await data.json();
                 console.error("Failed to update:", res);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const deletePost = async() => {
+        try {
+            const data = await fetch("/api/posts", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({id: post.id})
+            });
+
+            if (data.ok) {
+                window.location.reload();
+            } else {
+                const res = await data.json();
+                console.error("Failed to delete:", res);
             }
         } catch (error) {
             console.error(error);
@@ -120,6 +141,7 @@ export default function MockPosts({ post }: MockProps) {
                                 <button
                                     className="p-2 text-muted-foreground hover:text-destructive transition-colors hover:bg-destructive/10 rounded-full"
                                     title="Delete Post"
+                                    onClick={deletePost}
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </button>
