@@ -29,6 +29,11 @@ export default function MockPosts({ post }: MockProps) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [editContent, setEditContent] = useState("");
+    const maxLength = 200;
+    
+    const handleEdits = async() => {
+
+    }
 
     return (
 
@@ -40,14 +45,16 @@ export default function MockPosts({ post }: MockProps) {
                         <div className="flex flex-col gap-3">
                             <Textarea
                                 className="resize-none min-h-[100px] text-sm bg-background border-border"
-                                placeholder="Edit you post..."
+                                placeholder="Edit your post..."
+                                value={editContent}
+                                onChange={(e) => setEditContent(e.target.value)}
+                                maxLength={maxLength}
                             />
 
                             <div className="flex justify-end gap-2">
                                 <button
                                     className="px-4 py-1.5 text-xs font-bold bg-secondary text-secondary-foreground rounded-full hover:opacity-90 transition-opacity"
                                     onClick={() => {
-                                        setEditContent("");
                                         setIsEditing(false);
                                     }}
                                 >
@@ -55,6 +62,7 @@ export default function MockPosts({ post }: MockProps) {
                                 </button>
                                 <button
                                     className="px-4 py-1.5 text-xs font-bold bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity"
+                                    onClick={handleEdits}
                                 >
                                     Save
                                 </button>
@@ -68,7 +76,10 @@ export default function MockPosts({ post }: MockProps) {
                             <p className="text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
                             <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                 <button
-                                    onClick={() => setIsEditing(true)}
+                                    onClick={() => {
+                                        setEditContent(post.content);
+                                        setIsEditing(true);
+                                    }}
                                     className="p-2 text-muted-foreground hover:text-primary transition-colors hover:bg-primary/10 rounded-full"
                                     title="Edit post"
                                 >

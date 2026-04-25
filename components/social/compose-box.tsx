@@ -15,11 +15,6 @@ export function ComposeBox() {
   const [authorID, setAuthorID] = useState<{id: number} | null>(null);
   const maxLength = 280
 
-  // useEffect(() => {
-  //   fetch("/api/user")
-  //   .then(res => res.json())
-  //   .then(data => setAuthorID(data))
-  // }, []);
   useEffect(() => {
     const storedUser = localStorage.getItem("user")
     if (!storedUser) return
@@ -32,10 +27,6 @@ export function ComposeBox() {
 
   const handleComposePost = async() => {
 
-    // const id = authorID?.id;
-
-    console.log(content, authorID);
-
     const data = await fetch("/api/posts", {
       method: "POST",
       headers: {
@@ -45,7 +36,6 @@ export function ComposeBox() {
     });
 
     const res = await data.json();
-    console.log(res);
   }
 
   return (
