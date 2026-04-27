@@ -20,15 +20,17 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import CommentBox from "./comment-box"
+import { Comme } from "next/font/google"
 
 interface PostProps {
     post: {
         id: string
         author: {
-          name: string
-          username: string
-          avatar: string
-          verified?: boolean
+            name: string
+            username: string
+            avatar: string
+            verified?: boolean
         }
         content: string
         image?: string
@@ -42,11 +44,31 @@ interface PostProps {
 }
 
 export function PostCard({ post }: PostProps) {
-    const [isLiked, setIsLiked] = useState(post.isLiked || false);
     const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
     const [likes, setLikes] = useState(post.likes || 0);
+    const [isLiked, setIsLiked] = useState(post.isLiked || false);
+    const [repost, setRepost] = useState(post.reposts || 0);
+    const [isReposted, setIsReposted] = useState(false);
+    const [showComment, setShowComment] = useState(false);
 
-    const handleLikes = async() => {
+
+    const handleReposts = async () => {
+        const newIsReposted = !isReposted;
+        const newReposts = newIsReposted ? repost + 1 : Math.max(0, repost - 1);
+
+        setIsReposted(newIsReposted)
+        setRepost(newReposts);
+
+        const data = await fetch("/api/post-card", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id: post.id, repost: newReposts })
+        })
+    }
+
+    const handleLikes = async () => {
         const newIsLiked = !isLiked;
         const newLikes = newIsLiked ? likes + 1 : Math.max(0, likes - 1);
 
@@ -56,10 +78,13 @@ export function PostCard({ post }: PostProps) {
         const data = await fetch("/api/post-card", {
             method: "POST",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({id: post.id, likes: newLikes})
+            body: JSON.stringify({ id: post.id, likes: newLikes })
         });
+    }
+    const handleComments = () => {
+
     }
 
     return (
@@ -70,7 +95,7 @@ export function PostCard({ post }: PostProps) {
                     <Avatar className="h-11 w-11 transition-opacity hover:opacity-90 cursor-pointer">
                         <AvatarImage src={post.author.avatar} alt={post.author.name} />
                         <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                          {post.author.name.charAt(0)}
+                            {post.author.name.charAt(0)}
                         </AvatarFallback>
                     </Avatar>
                 </div>
@@ -123,10 +148,6 @@ export function PostCard({ post }: PostProps) {
                         <Button
                             variant="ghost"
                             size="sm"
-                            // onClick={() => {
-                            //     setIsLiked(!isLiked);
-                            //     setLikes(isLiked ? likes - 1 : likes + 1);
-                            // }}
                             onClick={handleLikes}
                             className={cn(
                                 "group flex items-center gap-2 rounded-full h-9 px-3 transition-all",
@@ -141,6 +162,10 @@ export function PostCard({ post }: PostProps) {
                             variant="ghost"
                             size="sm"
                             className="group flex items-center gap-2 text-muted-foreground hover:text-sky-500 hover:bg-sky-500/10 rounded-full h-9 px-3 transition-all"
+                            onClick={() => {
+                                setShowComment(!showComment);
+
+                            }}
                         >
                             <MessageCircle className="h-[18px] w-[18px] group-active:scale-90 transition-transform" />
                             <span className="text-xs font-medium">{post.comments}</span>
@@ -151,15 +176,14 @@ export function PostCard({ post }: PostProps) {
                             variant="ghost"
                             size="sm"
                             className="group flex items-center gap-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full h-9 px-3 transition-all"
+                            onClick={handleReposts}
                         >
                             <Repeat2 className="h-[18px] w-[18px] group-active:scale-90 transition-transform" />
                             <span className="text-xs font-medium">{post.reposts}</span>
                         </Button>
-
-
                         {/* Bookmark & Share */}
                         <div className="flex items-center">
-                             <Button
+                            <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => setIsBookmarked(!isBookmarked)}
@@ -179,6 +203,17 @@ export function PostCard({ post }: PostProps) {
                             </Button>
                         </div>
                     </div>
+
+                    {showComment && (
+                        <div className="mt-3 border-t border-border/50 pt-3 flex flex-col items-end">
+                            <input
+                                type="text"
+                                placeholder="Write a comment..."
+                                className="w-full p-2.5 text-sm border border-border bg-background/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                            />
+                            <Button size="sm" className="mt-2 h-8 px-4 rounded-full font-medium">Post</Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </Card>
