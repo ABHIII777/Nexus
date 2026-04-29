@@ -44,7 +44,6 @@ export async function DELETE(req: Request) {
 
     await db.delete(posts).where(eq(posts.id, Number(id)));
     
-    // Clear the cache globally so the post immediately disappears from edit-profile, profile, and feed pages
     revalidatePath("/", "layout");
 
     return NextResponse.json({message: "Post Deleted"}, {status: 200});

@@ -50,7 +50,7 @@ export function PostCard({ post }: PostProps) {
     const [repost, setRepost] = useState(post.reposts || 0);
     const [isReposted, setIsReposted] = useState(false);
     const [showComment, setShowComment] = useState(false);
-
+    const [userId, setUserId] = useState<any>(null);
 
     const handleReposts = async () => {
         const newIsReposted = !isReposted;
@@ -69,6 +69,7 @@ export function PostCard({ post }: PostProps) {
     }
 
     const handleLikes = async () => {
+        if (!userId) return 
         const newIsLiked = !isLiked;
         const newLikes = newIsLiked ? likes + 1 : Math.max(0, likes - 1);
 
@@ -80,12 +81,33 @@ export function PostCard({ post }: PostProps) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ id: post.id, likes: newLikes })
+            // body: JSON.stringify({ id: post.id, like: newLikes })
+            body: JSON.stringify({
+                userId: userId,
+                postId: post.id,
+                action: newIsLiked ? "like" : "unlike"
+            })
         });
-    }
-    const handleComments = () => {
 
+        const res = await data.json();
+        console.log(res);
     }
+
+    useEffect(() => {
+        const fetchMe = async() => {
+            try {
+                const res = await fetch("/api/user/me");
+                if (res.ok) {
+                    const data = await res.json()
+                    setUserId(data.id)
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        fetchMe();
+    }, [])
 
     return (
         <Card className="border-border bg-card hover:bg-secondary/20 transition-all duration-200 border-none shadow-none rounded-none border-b border-border/50 first:border-t">

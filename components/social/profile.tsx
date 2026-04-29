@@ -12,7 +12,6 @@ export default function ProfilePage() {
     const router = useRouter();
     const params = useParams();
     const userId = params.id;
-    console.log(userId)
 
     useEffect(() => {
         const fetchMe = async() => {
@@ -44,7 +43,6 @@ export default function ProfilePage() {
         }
     }, [userId]);
 
-    console.log(user);
 
     if (!user) {
         return (
