@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { and, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { posts, users, likes} from "@/db/schema";
+import { posts, users, likes } from "@/db/schema";
 
 export async function POST(req: Request) {
     const body = await req.json();
@@ -13,14 +13,16 @@ export async function POST(req: Request) {
             const numUserId = Number(userId);
             const numPostId = Number(postId);
 
-            const existing = await db.select().from(likes).where(
-                and(
-                    eq(likes.userID, numUserId),
-                    eq(likes.postID, numPostId)
+            const row = await db.query.likes.findFirst({
+                where: (likes, { eq, and }) => (
+                    and(
+                        eq(likes.postID, numPostId),
+                        eq(likes.userID, numUserId)
+                    )
                 )
-            );
+            })
 
-            if (existing.length === 0) {
+            if (!row) {
                 await db.insert(likes).values({
                     postID: numPostId,
                     userID: numUserId
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
             const numPostId = Number(postId);
 
             await db.delete(likes).where(
-                and (
+                and(
                     eq(likes.userID, numUserId),
                     eq(likes.postID, numPostId)
                 )
@@ -50,11 +52,11 @@ export async function POST(req: Request) {
                 .set({ reposts: Number(repost) })
                 .where(eq(posts.id, numPostId));
         }
-        
-        return NextResponse.json({message: "Update successfull"}, {status: 200});
-        
+
+        return NextResponse.json({ message: "Update successfull" }, { status: 200 });
+
     } catch (err) {
         console.error(err);
-        return NextResponse.json({error: "Database error"}, {status: 500});
+        return NextResponse.json({ error: "Database error" }, { status: 500 });
     }
 }
