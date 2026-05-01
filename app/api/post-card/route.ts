@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { and, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { posts, users, likes } from "@/db/schema";
-import { Linkedin } from "lucide-react";
+
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
@@ -49,7 +49,6 @@ export async function POST(req: Request) {
                     .set({ likes: sql`${posts.likes} + 1` })
                     .where(eq(posts.id, numPostId));
             } else {
-                // return NextResponse.json({message: "Post is already liked.", liked : true, updated: false}, {status: 200});
                 return NextResponse.json({liked: true, updated: false})
             }
         } else if (action === "unlike") {
