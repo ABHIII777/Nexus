@@ -19,7 +19,7 @@ export const posts = pgTable("posts", {
     content: text("content").notNull(),
     createdAt: timestamp("created_at").defaultNow(),
     likes: integer("likes").default(0),
-    reposts: integer("reposts").default(0)
+    reposts: integer("reposts").default(0),
 })
 
 export const userRelations = relations(users, ({many}) => ({
@@ -51,6 +51,16 @@ export const reposts = pgTable("reposts", {
     postID: integer("postID")
         .references(() => posts.id)
         .notNull(),
+})
+
+export const bookmark = pgTable("bookmark", {
+    userID: integer("userID")
+        .references(() => users.id)
+        .notNull(),
+
+    postID: integer("postID")
+        .references(() => posts.id)
+        .notNull()
 })
 
 export const userLikeRelations = relations(posts, ({many}) => ({
@@ -89,6 +99,26 @@ export const repostsRelations = relations(reposts, ({one}) => ({
 
     user: one(users, {
         fields: [reposts.userID],
+        references: [users.id]
+    })
+}))
+
+export const userBookmarkRelations = relations(posts, ({many}) => ({
+    posts: many(bookmark)
+}))
+
+export const postBookmarkRelations = relations(users, ({many}) => ({
+    users: many(bookmark)
+}))
+
+export const bookmarkRelations = relations(bookmark, ({one}) => ({
+    post: one(posts, {
+        fields: [bookmark.postID],
+        references: [posts.id]
+    }),
+
+    user: one(users, {
+        fields: [bookmark.userID],
         references: [users.id]
     })
 }))

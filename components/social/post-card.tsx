@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils"
 import CommentBox from "./comment-box"
 import { Comme } from "next/font/google"
 import { like } from "drizzle-orm"
-import { posts } from "@/db/schema"
+import { bookmark, posts } from "@/db/schema"
 
 interface PostProps {
     post: {
@@ -112,6 +112,32 @@ export function PostCard({ post }: PostProps) {
         }
     }
 
+    const handleBookmarks = async() => {
+        if (!userId) return 
+
+        const newIsBookmarked = !isBookmarked;
+        setIsBookmarked(newIsBookmarked);
+
+        const data = await fetch("/api/post-card", {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({
+                userId: userId,
+                postId: post.id,
+                action: newIsBookmarked ? "bookmarked" : "unbookmarked"
+            })
+        });
+
+        const res = await data.json()
+
+        if (res.updated === false) {
+            setIsBookmarked(res.bookmarked)
+        }
+        
+    }
+
     useEffect(() => {
         const fetchMe = async () => {
             try {
@@ -125,6 +151,7 @@ export function PostCard({ post }: PostProps) {
                         const likeData = await likeCheck.json();
                         setIsLiked(likeData.liked);
                         setIsReposted(likeData.reposted);
+                        setIsBookmarked(likeData.bookmarked);
                     }
                 }
             } catch (err) {
@@ -238,20 +265,13 @@ export function PostCard({ post }: PostProps) {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => setIsBookmarked(!isBookmarked)}
+                                onClick={handleBookmarks}
                                 className={cn(
                                     "group p-2 rounded-full transition-all h-9 w-9",
                                     isBookmarked ? "text-sky-500 hover:bg-sky-500/10" : "text-muted-foreground hover:text-sky-500 hover:bg-sky-500/10"
                                 )}
                             >
                                 <Bookmark className={cn("h-[18px] w-[18px] transition-all group-active:scale-90", isBookmarked && "fill-current")} />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="group p-2 rounded-full text-muted-foreground hover:text-sky-500 hover:bg-sky-500/10 transition-all h-9 w-9"
-                            >
-                                <Share className="h-[18px] w-[18px] group-active:scale-90 transition-all" />
                             </Button>
                         </div>
                     </div>

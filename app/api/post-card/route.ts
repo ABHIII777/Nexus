@@ -1,14 +1,15 @@
 import { db } from "@/db";
 import { and, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { posts, users, likes, reposts } from "@/db/schema";
+import { posts, users, likes, reposts, bookmark } from "@/db/schema";
+import { BookMarked } from "lucide-react";
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
     const postId = searchParams.get("postId");
 
-    if (!userId || !postId) return NextResponse.json({liked: false, reposted: false});
+    if (!userId || !postId) return NextResponse.json({ liked: false, reposted: false, bookmarked: false });
 
     const likedRow = await db.query.likes.findFirst({
         where: (likes, { eq, and }) => and(
@@ -24,7 +25,14 @@ export async function GET(req: Request) {
         )
     })
 
-    return NextResponse.json({ liked: !!likedRow, reposted: !!respostedRow })
+    const bookmarkedRow = await db.query.bookmark.findFirst({
+        where: (bookmark, { eq, and }) => and(
+            eq(bookmark.postID, Number(postId)),
+            eq(bookmark.userID, Number(userId))
+        )
+    })
+
+    return NextResponse.json({ liked: !!likedRow, reposted: !!respostedRow, bookmarked: !!bookmarkedRow })
 }
 
 export async function POST(req: Request) {
@@ -56,7 +64,7 @@ export async function POST(req: Request) {
                     .set({ likes: sql`${posts.likes} + 1` })
                     .where(eq(posts.id, numPostId));
             } else {
-                return NextResponse.json({liked: true, updated: false})
+                return NextResponse.json({ liked: true, updated: false })
             }
         } else if (action === "unlike") {
             const numUserId = Number(userId);
@@ -83,7 +91,7 @@ export async function POST(req: Request) {
                     .set({ likes: sql`GREATEST(0, ${posts.likes} - 1)` })
                     .where(eq(posts.id, numPostId));
             } else {
-                return NextResponse.json({liked: false, updated: false})
+                return NextResponse.json({ liked: false, updated: false })
             }
         } else if (action === "repost") {
             const numUserId = Number(userId);
@@ -108,7 +116,7 @@ export async function POST(req: Request) {
                     .set({ reposts: sql`${posts.reposts} + 1` })
                     .where(eq(posts.id, numPostId));
             } else {
-                return NextResponse.json({reposted: true, updated: false})
+                return NextResponse.json({ reposted: true, updated: false })
             }
         } else if (action === "unrepost") {
             const numUserId = Number(userId);
@@ -134,8 +142,54 @@ export async function POST(req: Request) {
                 await db.update(posts)
                     .set({ reposts: sql`GREATEST(0, ${posts.reposts} - 1)` })
                     .where(eq(posts.id, numPostId));
+            }
+
+            else {
+                return NextResponse.json({ reposted: false, updated: false })
+            }
+        } else if (action === "bookmarked") {
+            const numUserId = Number(userId)
+            const numPostId = Number(postId)
+
+            const row = await db.query.bookmark.findFirst({
+                where: (bookmark, { eq, and }) => (
+                    and(
+                        eq(bookmark.postID, numPostId),
+                        eq(bookmark.userID, numUserId)
+                    )
+                )
+            });
+
+            if (!row) {
+                await db.insert(bookmark).values({
+                    postID: numPostId,
+                    userID: numUserId
+                })
             } else {
-                return NextResponse.json({reposted: false, updated: false})
+                return NextResponse.json({ bookmarked: true, updated: false })
+            }
+        } else if (action === "unbookmarked") {
+            const numUserId = Number(userId);
+            const numPostId = Number(postId)
+
+            const row = await db.query.bookmark.findFirst({
+                where: (bookmark, { eq, and }) => (
+                    and(
+                        eq(bookmark.userID, numUserId),
+                        eq(bookmark.postID, numPostId)
+                    )
+                )
+            });
+
+            if (row) {
+                await db.delete(bookmark).where(
+                    and(
+                        eq(bookmark.postID, numPostId),
+                        eq(bookmark.userID, numUserId)
+                    )
+                )
+            } else {
+                return NextResponse.json({ bookmarked: false, updated: false })
             }
         }
 
