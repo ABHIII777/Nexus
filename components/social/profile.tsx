@@ -4,57 +4,60 @@ import { User, MapPin, Calendar, Link as LinkIcon, Edit2, Camera, MoreHorizontal
 import { PostCard } from "./post-card";
 import { useParams } from "next/navigation";
 
+
 export default function ProfilePage() {
 
-    const [user, setUser] = useState<any>(null);
-    const [currentUserId, setCurrentUserid] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"posts" | "comments" | "reposts" | "bookmarks">("posts");
 
-    const router = useRouter();
-    const params = useParams();
-    const userId = params.id;
+  const [user, setUser] = useState<any>(null);
+  const [currentUserId, setCurrentUserid] = useState<any>(null);
 
-    useEffect(() => {
-        const fetchMe = async() => {
-            try {
-                const res = await fetch("/api/user/me");
-                if (res.ok ) {
-                    const data = await res.json();
-                    setCurrentUserid(data.id);
-                }
-            } catch (err) {
-                console.error(err);
-            }
+  const router = useRouter();
+  const params = useParams();
+  const userId = params.id;
+
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const res = await fetch("/api/user/me");
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentUserid(data.id);
         }
-        fetchMe();
-    }, []);
-
-    useEffect(() => {
-        if (currentUserId && userId && Number(currentUserId) !== Number(userId)) {
-            router.push("/profile/" + currentUserId);
-        }
-    }, [currentUserId, userId, router]);
-
-    useEffect(() => {
-        if (userId) {
-            fetch(`/api/profile/${userId}`)
-                .then(res => res.json())
-                .then(data => setUser(data))
-                .catch(err => console.error("Fetch error:", err));
-        }
-    }, [userId]);
-
-
-    if (!user) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="text-primary animate-pulse font-medium italic">Loading Profile...</div>
-            </div>
-        );
+      } catch (err) {
+        console.error(err);
+      }
     }
+    fetchMe();
+  }, []);
 
-    const editPageNavigate = () => {
-      router.push(`/edit-profile/` + user.id);
+  useEffect(() => {
+    if (currentUserId && userId && Number(currentUserId) !== Number(userId)) {
+      router.push("/profile/" + currentUserId);
     }
+  }, [currentUserId, userId, router]);
+
+  useEffect(() => {
+    if (userId) {
+      fetch(`/api/profile/${userId}`)
+        .then(res => res.json())
+        .then(data => setUser(data))
+        .catch(err => console.error("Fetch error:", err));
+    }
+  }, [userId]);
+
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-primary animate-pulse font-medium italic">Loading Profile...</div>
+      </div>
+    );
+  }
+
+  const editPageNavigate = () => {
+    router.push(`/edit-profile/` + user.id);
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground border-x border-border">
@@ -79,7 +82,7 @@ export default function ProfilePage() {
           <button
             className="mb-2 flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary/10"
             onClick={editPageNavigate}
-            >
+          >
             <Edit2 className="h-4 w-4" />
             Edit Profile
           </button>
@@ -127,33 +130,33 @@ export default function ProfilePage() {
         {/* Tabs */}
         <div className="mt-6 border-b border-border overflow-x-auto no-scrollbar">
           <div className="flex min-w-max">
-            <TabButton label="Posts" active />
-            <TabButton label="Replies" />
-            <TabButton label="Media" />
-            <TabButton label="Likes" />
+            <TabButton label="Posts" active={activeTab === "posts"} onClick={() => setActiveTab("posts")} />
+            <TabButton label="Comments" active={activeTab === "comments"} onClick={() => setActiveTab("comments")} />
+            <TabButton label="Reposts" active={activeTab === "reposts"} onClick={() => setActiveTab("reposts")}/>
+            <TabButton label="Bookmarks" active={activeTab === "bookmarks"} onClick={() => setActiveTab("bookmarks")}/>
           </div>
         </div>
 
         {/* Posts */}
         <div className="mt-4 space-y-4 pb-12">
           {user.posts && user.posts.length > 0 ? (
-              user.posts.map((postData: any) => (
-                <PostCard
-                  key={postData.id}
-                  post={{
-                      ...postData,
-                      author: {
-                          name: user.name,
-                          avatar: user.avatar,
-                          verified: true
-                      }
-                  }}
-                />
-              ))
+            user.posts.map((postData: any) => (
+              <PostCard
+                key={postData.id}
+                post={{
+                  ...postData,
+                  author: {
+                    name: user.name,
+                    avatar: user.avatar,
+                    verified: true
+                  }
+                }}
+              />
+            ))
           ) : (
-              <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
-                  No posts yet.
-              </div>
+            <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+              No posts yet.
+            </div>
           )}
         </div>
       </div>
@@ -161,12 +164,12 @@ export default function ProfilePage() {
   );
 }
 
-function TabButton({ label, active = false }: { label: string; active?: boolean }) {
+function TabButton({ label, active = false, onClick }: { label: string; active?: boolean; onClick?: () => void }) {
   return (
     <button
-      className={`relative px-6 py-4 text-sm font-medium transition-colors hover:bg-secondary/50 ${
-        active ? "text-primary font-bold" : "text-muted-foreground"
-      }`}
+      className={`relative px-6 py-4 text-sm font-medium transition-colors hover:bg-secondary/50 ${active ? "text-primary font-bold" : "text-muted-foreground"
+        }`}
+        onClick={onClick}
     >
       {label}
       {active && (
