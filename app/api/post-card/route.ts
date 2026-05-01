@@ -1,23 +1,30 @@
 import { db } from "@/db";
 import { and, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { posts, users, likes } from "@/db/schema";
+import { posts, users, likes, reposts } from "@/db/schema";
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
     const postId = searchParams.get("postId");
 
-    if (!userId || !postId) return NextResponse.json({liked: false});
+    if (!userId || !postId) return NextResponse.json({liked: false, reposted: false});
 
-    const row = await db.query.likes.findFirst({
+    const likedRow = await db.query.likes.findFirst({
         where: (likes, { eq, and }) => and(
             eq(likes.postID, Number(postId)),
             eq(likes.userID, Number(userId))
         )
     })
 
-    return NextResponse.json({ liked: !!row })
+    const respostedRow = await db.query.reposts.findFirst({
+        where: (reposts, { eq, and }) => and(
+            eq(reposts.postID, Number(postId)),
+            eq(reposts.userID, Number(userId))
+        )
+    })
+
+    return NextResponse.json({ liked: !!likedRow, reposted: !!respostedRow })
 }
 
 export async function POST(req: Request) {
@@ -78,11 +85,58 @@ export async function POST(req: Request) {
             } else {
                 return NextResponse.json({liked: false, updated: false})
             }
-        } else if (repost !== undefined) {
-            const numPostId = Number(id);
-            await db.update(posts)
-                .set({ reposts: Number(repost) })
-                .where(eq(posts.id, numPostId));
+        } else if (action === "repost") {
+            const numUserId = Number(userId);
+            const numPostId = Number(postId);
+
+            const row = await db.query.reposts.findFirst({
+                where: (reposts, { eq, and }) => (
+                    and(
+                        eq(reposts.postID, numPostId),
+                        eq(reposts.userID, numUserId)
+                    )
+                )
+            })
+
+            if (!row) {
+                await db.insert(reposts).values({
+                    postID: numPostId,
+                    userID: numUserId
+                });
+
+                await db.update(posts)
+                    .set({ reposts: sql`${posts.reposts} + 1` })
+                    .where(eq(posts.id, numPostId));
+            } else {
+                return NextResponse.json({reposted: true, updated: false})
+            }
+        } else if (action === "unrepost") {
+            const numUserId = Number(userId);
+            const numPostId = Number(postId);
+
+            const row = await db.query.reposts.findFirst({
+                where: (reposts, { eq, and }) => (
+                    and(
+                        eq(reposts.postID, numPostId),
+                        eq(reposts.userID, numUserId)
+                    )
+                )
+            })
+
+            if (row) {
+                await db.delete(reposts).where(
+                    and(
+                        eq(reposts.userID, numUserId),
+                        eq(reposts.postID, numPostId)
+                    )
+                );
+
+                await db.update(posts)
+                    .set({ reposts: sql`GREATEST(0, ${posts.reposts} - 1)` })
+                    .where(eq(posts.id, numPostId));
+            } else {
+                return NextResponse.json({reposted: false, updated: false})
+            }
         }
 
         return NextResponse.json({ message: "Update successfull" }, { status: 200 });

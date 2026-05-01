@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils"
 import CommentBox from "./comment-box"
 import { Comme } from "next/font/google"
 import { like } from "drizzle-orm"
+import { posts } from "@/db/schema"
 
 interface PostProps {
     post: {
@@ -54,22 +55,6 @@ export function PostCard({ post }: PostProps) {
     const [userId, setUserId] = useState<any>(null);
     const [likeRes, setLikeRes] = useState<Boolean>();
 
-    const handleReposts = async () => {
-        const newIsReposted = !isReposted;
-        const newReposts = newIsReposted ? repost + 1 : Math.max(0, repost - 1);
-
-        setIsReposted(newIsReposted)
-        setRepost(newReposts);
-
-        const data = await fetch("/api/post-card", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ id: post.id, repost: newReposts })
-        })
-    }
-
     const handleLikes = async () => {
         if (!userId) return
         const newIsLiked = !isLiked;
@@ -98,8 +83,37 @@ export function PostCard({ post }: PostProps) {
         }
     }
 
+    const handleReposts = async() => {
+        if(!userId) return 
+
+        const newIsReposted = !isReposted;
+        const newReposts = newIsReposted ? (repost + 1) : Math.max(0, repost - 1)
+
+        setIsReposted(newIsReposted)
+        setRepost(newReposts)
+
+        const data = await fetch("/api/post-card", {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({
+                userId: userId,
+                postId: post.id,
+                action: newIsReposted ? "repost" : "unrepost"
+            })
+        });
+
+        const res = await data.json()
+        
+        if (res.updated === false) {
+            setRepost(repost)
+            setIsReposted(res.reposted)
+        }
+    }
+
     useEffect(() => {
-        const fetchMe = async() => {
+        const fetchMe = async () => {
             try {
                 const res = await fetch("/api/user/me");
                 if (res.ok) {
@@ -110,6 +124,7 @@ export function PostCard({ post }: PostProps) {
                     if (likeCheck.ok) {
                         const likeData = await likeCheck.json();
                         setIsLiked(likeData.liked);
+                        setIsReposted(likeData.reposted);
                     }
                 }
             } catch (err) {
@@ -208,11 +223,15 @@ export function PostCard({ post }: PostProps) {
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="group flex items-center gap-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full h-9 px-3 transition-all"
                             onClick={handleReposts}
+                            // className="group flex items-center gap-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full h-9 px-3 transition-all"
+                            className={cn(
+                                "group flex items-center gap-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full h-9 px-3 transition-all",
+                                isReposted ? "text-emerald-500 hover:bg-emerald-500/10" : "text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10"
+                            )}
                         >
                             <Repeat2 className="h-[18px] w-[18px] group-active:scale-90 transition-transform" />
-                            <span className="text-xs font-medium">{post.reposts}</span>
+                            <span className="text-xs font-medium">{repost}</span>
                         </Button>
                         {/* Bookmark & Share */}
                         <div className="flex items-center">
