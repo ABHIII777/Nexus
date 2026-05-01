@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils"
 import CommentBox from "./comment-box"
 import { Comme } from "next/font/google"
+import { like } from "drizzle-orm"
 
 interface PostProps {
     post: {
@@ -51,6 +52,7 @@ export function PostCard({ post }: PostProps) {
     const [isReposted, setIsReposted] = useState(false);
     const [showComment, setShowComment] = useState(false);
     const [userId, setUserId] = useState<any>(null);
+    const [likeRes, setLikeRes] = useState<Boolean>();
 
     const handleReposts = async () => {
         const newIsReposted = !isReposted;
@@ -69,7 +71,7 @@ export function PostCard({ post }: PostProps) {
     }
 
     const handleLikes = async () => {
-        if (!userId) return 
+        if (!userId) return
         const newIsLiked = !isLiked;
         const newLikes = newIsLiked ? likes + 1 : Math.max(0, likes - 1);
 
@@ -90,7 +92,10 @@ export function PostCard({ post }: PostProps) {
         });
 
         const res = await data.json();
-        console.log(res);
+        if (res.updated === false) {
+            setLikes(likes);
+            setIsLiked(res.liked);
+        }
     }
 
     useEffect(() => {
@@ -100,6 +105,12 @@ export function PostCard({ post }: PostProps) {
                 if (res.ok) {
                     const data = await res.json()
                     setUserId(data.id)
+
+                    const likeCheck = await fetch(`/api/post-card?userId=${data.id}&postId=${post.id}`);
+                    if (likeCheck.ok) {
+                        const likeData = await likeCheck.json();
+                        setIsLiked(likeData.liked);
+                    }
                 }
             } catch (err) {
                 console.error(err);
