@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 export default function ProfilePage() {
 
   const [activeTab, setActiveTab] = useState<"posts" | "comments" | "reposts" | "bookmarks" | "likes">("posts");
+  const [tabContent, setTabContent] = useState<any>(null);
 
   const [user, setUser] = useState<any>(null);
   const [currentUserId, setCurrentUserid] = useState<any>(null);
@@ -45,6 +46,16 @@ export default function ProfilePage() {
         .catch(err => console.error("Fetch error:", err));
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      fetch(`/api/profile/${userId}?tab=${activeTab}`)
+        .then(res => res.json())
+        .then(data => setTabContent(data))
+    }
+
+    console.log(tabContent);
+  }, [activeTab])
 
 
   if (!user) {
@@ -167,7 +178,27 @@ export default function ProfilePage() {
 
         {
           activeTab === "likes" && (
-            <h1>LIkes</h1>
+            <div className="mt-4 space-y-4 pb-12">
+              {user.posts && user.posts.length > 0 ? (
+                user.posts.map((postData: any) => (
+                  <PostCard
+                    key={postData.id}
+                    post={{
+                      ...postData,
+                      author: {
+                        name: user.name,
+                        avatar: user.avatar,
+                        verified: true
+                      }
+                    }}
+                  />
+                ))
+              ) : (
+                <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                  No liked posts yet.
+                </div>
+              )}
+            </div>
           )
         }
       </div>
