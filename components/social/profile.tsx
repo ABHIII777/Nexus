@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 
 export default function ProfilePage() {
 
-  const [activeTab, setActiveTab] = useState<"posts" | "comments" | "reposts" | "bookmarks">("posts");
+  const [activeTab, setActiveTab] = useState<"posts" | "comments" | "reposts" | "bookmarks" | "likes">("posts");
 
   const [user, setUser] = useState<any>(null);
   const [currentUserId, setCurrentUserid] = useState<any>(null);
@@ -131,34 +131,45 @@ export default function ProfilePage() {
         <div className="mt-6 border-b border-border overflow-x-auto no-scrollbar">
           <div className="flex min-w-max">
             <TabButton label="Posts" active={activeTab === "posts"} onClick={() => setActiveTab("posts")} />
+            <TabButton label="Likes" active={activeTab === "likes"} onClick={() => setActiveTab("likes")} />
             <TabButton label="Comments" active={activeTab === "comments"} onClick={() => setActiveTab("comments")} />
-            <TabButton label="Reposts" active={activeTab === "reposts"} onClick={() => setActiveTab("reposts")}/>
-            <TabButton label="Bookmarks" active={activeTab === "bookmarks"} onClick={() => setActiveTab("bookmarks")}/>
+            <TabButton label="Reposts" active={activeTab === "reposts"} onClick={() => setActiveTab("reposts")} />
+            <TabButton label="Bookmarks" active={activeTab === "bookmarks"} onClick={() => setActiveTab("bookmarks")} />
           </div>
         </div>
 
-        {/* Posts */}
-        <div className="mt-4 space-y-4 pb-12">
-          {user.posts && user.posts.length > 0 ? (
-            user.posts.map((postData: any) => (
-              <PostCard
-                key={postData.id}
-                post={{
-                  ...postData,
-                  author: {
-                    name: user.name,
-                    avatar: user.avatar,
-                    verified: true
-                  }
-                }}
-              />
-            ))
-          ) : (
-            <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
-              No posts yet.
+        {
+          activeTab === "posts" && (
+            <div className="mt-4 space-y-4 pb-12">
+              {user.posts && user.posts.length > 0 ? (
+                user.posts.map((postData: any) => (
+                  <PostCard
+                    key={postData.id}
+                    post={{
+                      ...postData,
+                      author: {
+                        name: user.name,
+                        avatar: user.avatar,
+                        verified: true
+                      }
+                    }}
+                  />
+                ))
+              ) : (
+                <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                  No posts yet.
+                </div>
+              )}
             </div>
-          )}
-        </div>
+
+          )
+        }
+
+        {
+          activeTab === "likes" && (
+            <h1>LIkes</h1>
+          )
+        }
       </div>
     </div>
   );
@@ -169,7 +180,7 @@ function TabButton({ label, active = false, onClick }: { label: string; active?:
     <button
       className={`relative px-6 py-4 text-sm font-medium transition-colors hover:bg-secondary/50 ${active ? "text-primary font-bold" : "text-muted-foreground"
         }`}
-        onClick={onClick}
+      onClick={onClick}
     >
       {label}
       {active && (
