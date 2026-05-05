@@ -177,8 +177,6 @@ export function PostCard({ post }: PostProps) {
             .then(data => setComment(data));
     }, [post.id]);
 
-    console.log(comment)
-
     useEffect(() => {
         const fetchMe = async () => {
             try {
@@ -317,6 +315,18 @@ export function PostCard({ post }: PostProps) {
                         </div>
                     </div>
 
+                    {
+                        showComment && (
+                            <div className="mt-4 space-y-3">
+                                {comment.map((comm) => (
+                                    <div key={comm.id} className="border p-3 rounded">
+                                        <p className="text-sm">{comm.content}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    }
+
                     {showComment && (
                         <div className="mt-3 border-t border-border/50 pt-3 flex flex-col items-end">
                             <input
@@ -334,17 +344,6 @@ export function PostCard({ post }: PostProps) {
                             >Post</Button>
                         </div>
                     )}
-                    {
-                        showComment && (
-                            <div className="mt-4 space-y-3">
-                                {comment.map((comm) => (
-                                    <div key={comm.id} className="border p-3 rounded">
-                                        <p className="text-sm">{comm.content}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        )
-                    }
             </div>
         </div>
         </Card >
