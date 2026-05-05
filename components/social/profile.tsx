@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { User, MapPin, Calendar, Link as LinkIcon, Edit2, Camera, MoreHorizontal, CheckCircle, UsersIcon } from "lucide-react";
+import { User, MapPin, Calendar, Link as LinkIcon, Edit2, Camera, MoreHorizontal, CheckCircle, UsersIcon, TableColumnsSplit } from "lucide-react";
 import { PostCard } from "./post-card";
 import { useParams } from "next/navigation";
 
@@ -56,7 +56,7 @@ export default function ProfilePage() {
 
     console.log()
   }, [activeTab])
-  
+
   console.log(tabContent);
 
   if (!user) {
@@ -183,7 +183,33 @@ export default function ProfilePage() {
               {
                 tabContent.likes && tabContent.likes.length > 0 ? (
                   tabContent.likes.map((num: any) => (
-                    <PostCard 
+                    <PostCard
+                      key={num.post.id}
+                      post={{
+                        ...num.post,
+                        author: {
+                          name: num.post.author.name
+                        }
+                      }}
+                    />
+                  ))
+                ) : (
+                  <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                    You haven't liked any post yet.
+                  </div>
+                )
+              }
+            </div>
+          )
+        }
+
+        {
+          activeTab === "reposts" && (
+            <div className="mt-4 space-y-4 pb-12">
+              {
+                tabContent.post && tabContent.post.length > 0 ? (
+                  tabContent.post.map((num: any) => (
+                    <PostCard
                       key={num.post.id}
                       post={{
                         ...num.post,
@@ -194,20 +220,10 @@ export default function ProfilePage() {
                     />
                   ))
                 ) : (
-                  <div></div>
+                  <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                    You haven't reposted any post yet.
+                  </div>
                 )
-                // tabContent && (
-                //   <PostCard 
-                //   post={{
-                //     ...tabContent,
-                //     author: {
-                //       name: tabContent.name,
-                //       avatar: tabContent.avatar,
-                //       verified: true
-                //     }
-                    
-                //   }}/>
-                // )
               }
             </div>
           )

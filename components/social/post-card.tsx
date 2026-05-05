@@ -42,6 +42,7 @@ interface PostProps {
         timestamp: string
         isLiked?: boolean
         isBookmarked?: boolean
+        isReposted?: boolean
     }
 }
 
@@ -50,7 +51,7 @@ export function PostCard({ post }: PostProps) {
     const [likes, setLikes] = useState(post.likes || 0);
     const [isLiked, setIsLiked] = useState(post.isLiked || false);
     const [repost, setRepost] = useState(post.reposts || 0);
-    const [isReposted, setIsReposted] = useState(false);
+    const [isReposted, setIsReposted] = useState(post.reposts || false);
     const [showComment, setShowComment] = useState(false);
     const [userId, setUserId] = useState<any>(null);
     const [likeRes, setLikeRes] = useState<Boolean>();
@@ -68,7 +69,6 @@ export function PostCard({ post }: PostProps) {
             headers: {
                 "Content-Type": "application/json"
             },
-            // body: JSON.stringify({ id: post.id, like: newLikes })
             body: JSON.stringify({
                 userId: userId,
                 postId: post.id,

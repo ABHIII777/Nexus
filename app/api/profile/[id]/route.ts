@@ -31,13 +31,35 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                 with: {
                     likes: {
                         with: {
-                            post: true
+                            post: {
+                                with: {
+                                    author: true
+                                }
+                            }
                         }
                     }
                 }
 
             })
             break;
+
+        case "reposts":
+            data = await db.query.users.findFirst({
+                where: (users, {eq}) => eq(users.id, userID),
+                with: {
+                    reposts: {
+                        with: {
+                            post: {
+                                with: {
+                                    author: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            break;
+
         }
         
     return NextResponse.json(data)
