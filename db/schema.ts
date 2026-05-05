@@ -1,5 +1,6 @@
 import { pgTable, serial, text, integer, timestamp } from "drizzle-orm/pg-core"
 import { relations } from "drizzle-orm";
+import { string } from "zod";
 
 export const users = pgTable("users", {
     id: serial("id").primaryKey(),
@@ -20,6 +21,14 @@ export const posts = pgTable("posts", {
     createdAt: timestamp("created_at").defaultNow(),
     likes: integer("likes").default(0),
     reposts: integer("reposts").default(0),
+})
+
+export const comments = pgTable("comments", {
+    id: serial("id").primaryKey(),
+    userId: integer("userId").references(() => users.id).notNull(),
+    postId: integer("postId").references(() => posts.id).notNull(),
+    content: text("content").notNull(),
+    created_at: timestamp("created_at").defaultNow(),
 })
 
 export const likes = pgTable("likes", {
@@ -101,6 +110,18 @@ export const bookmarkRelations = relations(bookmark, ({one}) => ({
 
     user: one(users, {
         fields: [bookmark.userID],
+        references: [users.id]
+    })
+}))
+
+export const commentsRelations = relations(comments, ({one}) => ({
+    post: one(posts, {
+        fields: [comments.postId],
+        references: [posts.id]
+    }),
+
+    user: one(users, {
+        fields: [comments.userId],
         references: [users.id]
     })
 }))
