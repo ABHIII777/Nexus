@@ -54,9 +54,10 @@ export default function ProfilePage() {
         .then(data => setTabContent(data))
     }
 
-    console.log(tabContent);
+    console.log()
   }, [activeTab])
-
+  
+  console.log(tabContent);
 
   if (!user) {
     return (
@@ -179,25 +180,35 @@ export default function ProfilePage() {
         {
           activeTab === "likes" && (
             <div className="mt-4 space-y-4 pb-12">
-              {user.posts && user.posts.length > 0 ? (
-                user.posts.map((postData: any) => (
-                  <PostCard
-                    key={postData.id}
-                    post={{
-                      ...postData,
-                      author: {
-                        name: user.name,
-                        avatar: user.avatar,
-                        verified: true
-                      }
-                    }}
-                  />
-                ))
-              ) : (
-                <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
-                  No liked posts yet.
-                </div>
-              )}
+              {
+                tabContent.likes && tabContent.likes.length > 0 ? (
+                  tabContent.likes.map((num: any) => (
+                    <PostCard 
+                      key={num.post.id}
+                      post={{
+                        ...num.post,
+                        author: {
+                          name: tabContent.name
+                        }
+                      }}
+                    />
+                  ))
+                ) : (
+                  <div></div>
+                )
+                // tabContent && (
+                //   <PostCard 
+                //   post={{
+                //     ...tabContent,
+                //     author: {
+                //       name: tabContent.name,
+                //       avatar: tabContent.avatar,
+                //       verified: true
+                //     }
+                    
+                //   }}/>
+                // )
+              }
             </div>
           )
         }

@@ -22,17 +22,6 @@ export const posts = pgTable("posts", {
     reposts: integer("reposts").default(0),
 })
 
-export const userRelations = relations(users, ({many}) => ({
-    posts: many(posts)
-}));
-
-export const postRelations = relations(posts, ({one}) => ({
-    author : one(users, {
-        fields: [posts.author],
-        references: [users.id],
-    }),
-}));
-
 export const likes = pgTable("likes", {
     userID: integer("userID")
         .references(() => users.id)
@@ -63,13 +52,22 @@ export const bookmark = pgTable("bookmark", {
         .notNull()
 })
 
-export const userLikeRelations = relations(posts, ({many}) => ({
-    posts: many(likes)
-}))
+export const userRelations = relations(users, ({many}) => ({
+    posts: many(posts),
+    likes: many(likes),
+    reposts: many(reposts),
+    bookmarks: many(bookmark)
+}));
 
-export const postLikeRelations = relations(users, ({many}) => ({
-    users: many(likes)
-}))
+export const postRelations = relations(posts, ({one, many}) => ({
+    author : one(users, {
+        fields: [posts.author],
+        references: [users.id],
+    }),
+    likes: many(likes),
+    reposts: many(reposts),
+    bookmarks: many(bookmark)
+}));
 
 export const likeRelations = relations(likes, ({one}) => ({
     post: one(posts, {
@@ -83,14 +81,6 @@ export const likeRelations = relations(likes, ({one}) => ({
     })
 }))
 
-export const userRespostRelations = relations(posts, ({many}) => ({
-    posts: many(reposts)
-}))
-
-export const postRepostRelations = relations(users, ({many}) => ({
-    users: many(reposts)
-}))
-
 export const repostsRelations = relations(reposts, ({one}) => ({
     post: one(posts, {
         fields: [reposts.postID],
@@ -101,14 +91,6 @@ export const repostsRelations = relations(reposts, ({one}) => ({
         fields: [reposts.userID],
         references: [users.id]
     })
-}))
-
-export const userBookmarkRelations = relations(posts, ({many}) => ({
-    posts: many(bookmark)
-}))
-
-export const postBookmarkRelations = relations(users, ({many}) => ({
-    users: many(bookmark)
 }))
 
 export const bookmarkRelations = relations(bookmark, ({one}) => ({
