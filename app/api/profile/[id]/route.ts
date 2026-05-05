@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { likes, users, posts } from "@/db/schema"
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { useId } from "react";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
     const { searchParams } = new URL(req.url);
@@ -58,10 +59,26 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                     }
                 }
             })
-            console.log(data)
             break;
 
-        }
+        case "bookmarks":
+            data = await db.query.users.findFirst({
+                where: (users, { eq })=> eq(users.id, userID),
+                with: {
+                    bookmarks: {
+                        with: {
+                            post: {
+                                with: {
+                                    author: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            break;
+
+    }
         
     return NextResponse.json(data)
 }

@@ -228,6 +228,32 @@ export default function ProfilePage() {
             </div>
           )
         }
+
+        {
+          activeTab === "bookmarks" && (
+            <div className="mt-4 space-y-4 pb-12">
+              {
+                tabContent.bookmarks && tabContent.bookmarks.length > 0 ? (
+                  tabContent.bookmarks.map((num: any) => (
+                    <PostCard
+                      key={num.post.id}
+                      post={{
+                        ...num.post,
+                        author: {
+                          name: num.post.author.name
+                        }
+                      }}
+                    />
+                  ))
+                ) : (
+                  <div className="py-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                    You haven't bookmarked any post yet.
+                  </div>
+                )
+              }
+            </div>
+          )
+        }
       </div>
     </div>
   );
