@@ -57,7 +57,6 @@ export default function ProfilePage() {
     console.log()
   }, [activeTab])
 
-  console.log(tabContent);
 
   if (!user) {
     return (

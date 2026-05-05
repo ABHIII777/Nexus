@@ -48,13 +48,22 @@ interface PostProps {
 
 export function PostCard({ post }: PostProps) {
     const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
+
     const [likes, setLikes] = useState(post.likes || 0);
     const [isLiked, setIsLiked] = useState(post.isLiked || false);
+
     const [repost, setRepost] = useState(post.reposts || 0);
     const [isReposted, setIsReposted] = useState(post.reposts || false);
+
+    const [comment, setComment] = useState<any[]>([]);
     const [showComment, setShowComment] = useState(false);
+    const [commentContent, setCommentContent] = useState("");
+    const [loadingComments, setLoadingComments] = useState(false);
+
     const [userId, setUserId] = useState<any>(null);
     const [likeRes, setLikeRes] = useState<Boolean>();
+
+    const maxLength = 200;
 
     const handleLikes = async () => {
         if (!userId) return
@@ -83,8 +92,8 @@ export function PostCard({ post }: PostProps) {
         }
     }
 
-    const handleReposts = async() => {
-        if(!userId) return 
+    const handleReposts = async () => {
+        if (!userId) return
 
         const newIsReposted = !isReposted;
         const newReposts = newIsReposted ? (repost + 1) : Math.max(0, repost - 1)
@@ -95,7 +104,7 @@ export function PostCard({ post }: PostProps) {
         const data = await fetch("/api/post-card", {
             method: "POST",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 userId: userId,
@@ -105,15 +114,15 @@ export function PostCard({ post }: PostProps) {
         });
 
         const res = await data.json()
-        
+
         if (res.updated === false) {
             setRepost(repost)
             setIsReposted(res.reposted)
         }
     }
 
-    const handleBookmarks = async() => {
-        if (!userId) return 
+    const handleBookmarks = async () => {
+        if (!userId) return
 
         const newIsBookmarked = !isBookmarked;
         setIsBookmarked(newIsBookmarked);
@@ -121,7 +130,7 @@ export function PostCard({ post }: PostProps) {
         const data = await fetch("/api/post-card", {
             method: "POST",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 userId: userId,
@@ -135,8 +144,40 @@ export function PostCard({ post }: PostProps) {
         if (res.updated === false) {
             setIsBookmarked(res.bookmarked)
         }
-        
+
     }
+
+    const handleComments = async () => {
+        if (!commentContent.trim()) return
+
+        setLoadingComments(true);
+
+        const res = await fetch("/api/comments", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userId: userId,
+                postId: post.id,
+                content: commentContent
+            })
+        })
+
+        const newComment = await res.json();
+
+        setComment((prev) => [newComment, ...prev])
+        setCommentContent("")
+        setLoadingComments(false);
+    }
+
+    useEffect(() => {
+        fetch(`/api/comments?postId=${post.id}`)
+            .then(res => res.json())
+            .then(data => setComment(data));
+    }, [post.id]);
+
+    console.log(comment)
 
     useEffect(() => {
         const fetchMe = async () => {
@@ -233,6 +274,7 @@ export function PostCard({ post }: PostProps) {
                             <span className="text-xs font-medium">{likes}</span>
                         </Button>
                         {/* Comment */}
+
                         <Button
                             variant="ghost"
                             size="sm"
@@ -251,7 +293,6 @@ export function PostCard({ post }: PostProps) {
                             variant="ghost"
                             size="sm"
                             onClick={handleReposts}
-                            // className="group flex items-center gap-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full h-9 px-3 transition-all"
                             className={cn(
                                 "group flex items-center gap-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full h-9 px-3 transition-all",
                                 isReposted ? "text-emerald-500 hover:bg-emerald-500/10" : "text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10"
@@ -282,12 +323,30 @@ export function PostCard({ post }: PostProps) {
                                 type="text"
                                 placeholder="Write a comment..."
                                 className="w-full p-2.5 text-sm border border-border bg-background/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+                                value={commentContent}
+                                onChange={(e) => setCommentContent(e.target.value)}
+                                maxLength={maxLength}
                             />
-                            <Button size="sm" className="mt-2 h-8 px-4 rounded-full font-medium">Post</Button>
+                            <Button
+                                size="sm"
+                                className="mt-2 h-8 px-4 rounded-full font-medium"
+                                onClick={handleComments}
+                            >Post</Button>
                         </div>
                     )}
-                </div>
+                    {
+                        showComment && (
+                            <div className="mt-4 space-y-3">
+                                {comment.map((comm) => (
+                                    <div key={comm.id} className="border p-3 rounded">
+                                        <p className="text-sm">{comm.content}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    }
             </div>
-        </Card>
+        </div>
+        </Card >
     );
 }
