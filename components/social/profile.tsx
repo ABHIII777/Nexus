@@ -207,14 +207,14 @@ export default function ProfilePage() {
           activeTab === "reposts" && (
             <div className="mt-4 space-y-4 pb-12">
               {
-                tabContent.post && tabContent.post.length > 0 ? (
-                  tabContent.post.map((num: any) => (
+                tabContent.reposts && tabContent.reposts.length > 0 ? (
+                  tabContent.reposts.map((num: any) => (
                     <PostCard
                       key={num.post.id}
                       post={{
                         ...num.post,
                         author: {
-                          name: tabContent.name
+                          name: num.post.author.name
                         }
                       }}
                     />

@@ -9,7 +9,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     const { id } = await params;
     const userID = Number(id);
 
-    const validTabs = ["posts", "likes", "comments", "bookmarks"] as const;
+    const validTabs = ["posts", "likes", "comments", "bookmarks", "reposts"] as const;
     const tabs = validTabs.includes(tabParams as any) ? tabParams : "posts"
 
     let data;
@@ -58,6 +58,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                     }
                 }
             })
+            console.log(data)
             break;
 
         }
