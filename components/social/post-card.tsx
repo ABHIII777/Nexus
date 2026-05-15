@@ -20,10 +20,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import CommentBox from "./comment-box"
-import { Comme } from "next/font/google"
 import { like } from "drizzle-orm"
 import { bookmark, posts } from "@/db/schema"
+import CommentBox from "./comment-box"
 
 interface PostProps {
     post: {
@@ -124,6 +123,8 @@ export function PostCard({ post }: PostProps) {
     const handleBookmarks = async () => {
         if (!userId) return
 
+        console.log(userId)
+
         const newIsBookmarked = !isBookmarked;
         setIsBookmarked(newIsBookmarked);
 
@@ -148,6 +149,7 @@ export function PostCard({ post }: PostProps) {
     }
 
     const handleComments = async () => {
+        if (!userId) return
         if (!commentContent.trim()) return
 
         setLoadingComments(true);
@@ -165,11 +167,12 @@ export function PostCard({ post }: PostProps) {
         })
 
         const newComment = await res.json();
-        console.log(newComment.userId);
+        console.log(newComment);
 
         setComment((prev) => [newComment, ...prev])
         setCommentContent("")
         setLoadingComments(false);
+        console.log(comment);
     }
 
     useEffect(() => {
@@ -320,10 +323,12 @@ export function PostCard({ post }: PostProps) {
                         showComment && (
                             <div className="mt-4 space-y-3">
                                 {comment.map((comm) => (
-                                    <div key={comm.id} className="border p-3 rounded">
-                                        <p>{comm.userId}</p>
-                                        <p className="text-sm">{comm.content}</p>
-                                    </div>
+                                    <CommentBox 
+                                        key={comm.id}
+                                        comment={{
+                                            ...comm
+                                        }}
+                                    />
                                 ))}
                             </div>
                         )
