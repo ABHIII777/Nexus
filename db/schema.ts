@@ -65,7 +65,8 @@ export const userRelations = relations(users, ({many}) => ({
     posts: many(posts),
     likes: many(likes),
     reposts: many(reposts),
-    bookmarks: many(bookmark)
+    bookmarks: many(bookmark),
+    comments: many(comments)
 }));
 
 export const postRelations = relations(posts, ({one, many}) => ({

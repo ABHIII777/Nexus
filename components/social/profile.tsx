@@ -257,6 +257,33 @@ export default function ProfilePage() {
             </div>
           )
         }
+
+        {
+          activeTab === "comments" && (
+            <div className="mt-4 space-y-4 pb-12">
+              {
+                tabContent.comments && tabContent.comments.length > 0 ? (
+                  tabContent.comments.map((num: any) => (
+                    <PostCard 
+                      key={num.post.id}
+                      post={{
+                        ...num.post,
+                        author: {
+                          name: num.post.author.name
+                        }
+                      }}
+                      isProfileView={true}
+                    />
+                  ))
+                ) : (
+                  <div className="py-12 text-center text-muetd-foreground border border-dashed border-border reounded-2xl">
+                    You haven't commented on any post yet.
+                  </div>
+                )
+              }
+            </div>
+          )
+        }
       </div>
     </div>
   );

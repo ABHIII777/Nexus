@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { likes, users, posts } from "@/db/schema"
+import { likes, users, posts, comments } from "@/db/schema"
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { useId } from "react";
@@ -66,6 +66,23 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                 where: (users, { eq })=> eq(users.id, userID),
                 with: {
                     bookmarks: {
+                        with: {
+                            post: {
+                                with: {
+                                    author: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            break;
+
+        case "comments":
+            data = await db.query.users.findFirst({
+                where: (users, { eq }) => eq(users.id, userID),
+                with: {
+                    comments: {
                         with: {
                             post: {
                                 with: {
