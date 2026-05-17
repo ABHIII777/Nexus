@@ -42,10 +42,11 @@ interface PostProps {
         isLiked?: boolean
         isBookmarked?: boolean
         isReposted?: boolean
-    }
+    },
+    isProfileView?: boolean
 }
 
-export function PostCard({ post }: PostProps) {
+export function PostCard({ post, isProfileView }: PostProps) {
     const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked || false);
 
     const [likes, setLikes] = useState(post.likes || 0);
@@ -328,6 +329,7 @@ export function PostCard({ post }: PostProps) {
                                         comment={{
                                             ...comm
                                         }}
+                                        isProfileView={isProfileView}
                                     />
                                 ))}
                             </div>

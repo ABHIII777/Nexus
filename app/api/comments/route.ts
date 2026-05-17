@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { comments } from "@/db/schema";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
     const body = await req.json()
@@ -35,5 +36,20 @@ export async function GET(req: Request) {
         return NextResponse.json(data)
     } catch (err) {
         return NextResponse.json({ error: err }, { status: 400 })
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const body = await req.json();
+        const { id } = body;
+
+        await db.delete(comments).where(eq(comments.id, Number(id)));
+
+        revalidatePath("/", "layout");
+
+        return NextResponse.json({ message: "Comment Deleted" }, { status: 200})
+    } catch (err) {
+        return NextResponse.json({ error: err }, { status: 500 });
     }
 }

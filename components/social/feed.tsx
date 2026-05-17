@@ -42,7 +42,7 @@ export function Feed() {
         {showCompose && <ComposeBox />}
         <div className="space-y-4">
           {post.map((postData) => (
-            <PostCard key={postData.id} post={postData} />
+            <PostCard key={postData.id} post={postData} isProfileView={false}/>
           ))}
           {post.length === 0 && (
             <div className="py-20 text-center text-muted-foreground italic">

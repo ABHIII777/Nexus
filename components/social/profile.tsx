@@ -164,6 +164,7 @@ export default function ProfilePage() {
                         verified: true
                       }
                     }}
+                    isProfileView={true}
                   />
                 ))
               ) : (
@@ -190,6 +191,7 @@ export default function ProfilePage() {
                           name: num.post.author.name
                         }
                       }}
+                      isProfileView={true}
                     />
                   ))
                 ) : (
@@ -216,6 +218,7 @@ export default function ProfilePage() {
                           name: num.post.author.name
                         }
                       }}
+                      isProfileView={true}
                     />
                   ))
                 ) : (
@@ -242,6 +245,7 @@ export default function ProfilePage() {
                           name: num.post.author.name
                         }
                       }}
+                      isProfileView={true}
                     />
                   ))
                 ) : (
