@@ -21,7 +21,7 @@ export default function LandingPage() {
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
               <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">Nexus</span>
+            <span className="text-xl font-bold">Synapse</span>
           </Link>
           <nav className="hidden items-center gap-8 md:flex">
             <Link href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
@@ -61,7 +61,7 @@ export default function LandingPage() {
               Connect with the world like never before
             </h1>
             <p className="mt-6 text-pretty text-lg text-muted-foreground sm:text-xl">
-              Nexus is the next-generation social platform where ideas flourish, communities thrive, and meaningful connections happen every day.
+              Synapse is the next-generation social platform where ideas flourish, communities thrive, and meaningful connections happen every day.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild className="w-full sm:w-auto">
@@ -97,7 +97,7 @@ export default function LandingPage() {
                 <div className="h-3 w-3 rounded-full bg-red-500/80" />
                 <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
                 <div className="h-3 w-3 rounded-full bg-green-500/80" />
-                <span className="ml-4 text-xs text-muted-foreground">nexus.app/feed</span>
+                <span className="ml-4 text-xs text-muted-foreground">synapse.app/feed</span>
               </div>
               <div className="grid grid-cols-12 gap-4 p-4">
                 <div className="col-span-3 space-y-3">
@@ -238,7 +238,7 @@ export default function LandingPage() {
           <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                quote: "Nexus has completely changed how I connect with people. The communities feature is incredible!",
+                quote: "Synapse has completely changed how I connect with people. The communities feature is incredible!",
                 author: "Sarah Chen",
                 role: "Designer",
                 avatar: "SC",
@@ -307,7 +307,7 @@ export default function LandingPage() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <Zap className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold">Nexus</span>
+              <span className="font-semibold">Synapse</span>
             </div>
             <div className="flex gap-8 text-sm text-muted-foreground">
               <Link href="#" className="transition-colors hover:text-foreground">About</Link>
@@ -316,7 +316,7 @@ export default function LandingPage() {
               <Link href="#" className="transition-colors hover:text-foreground">Contact</Link>
             </div>
             <div className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Nexus. All rights reserved.
+              &copy; {new Date().getFullYear()} Synapse. All rights reserved.
             </div>
           </div>
         </div>

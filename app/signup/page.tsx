@@ -56,7 +56,7 @@ export default function SignupPage() {
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
               <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">Nexus</span>
+            <span className="text-xl font-bold">Synapse</span>
           </Link>
         </div>
 
@@ -72,7 +72,7 @@ export default function SignupPage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold">Create your account</h1>
             <p className="mt-2 text-muted-foreground">
-              Join millions of people connecting on Nexus
+              Join millions of people connecting on Synapse
             </p>
           </div>
 
@@ -234,7 +234,7 @@ export default function SignupPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
             <Zap className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-2xl font-bold">Nexus</span>
+          <span className="text-2xl font-bold">Synapse</span>
         </Link>
 
         <div className="relative z-10 space-y-8">
@@ -270,7 +270,7 @@ export default function SignupPage() {
         </div>
 
         <div className="relative z-10 text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Nexus. All rights reserved.
+          &copy; {new Date().getFullYear()} Synapse. All rights reserved.
         </div>
       </div>
     </div>

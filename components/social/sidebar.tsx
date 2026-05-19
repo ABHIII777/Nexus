@@ -57,7 +57,7 @@ export function Sidebar() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
                     <span className="text-xl font-bold text-primary-foreground">N</span>
                 </div>
-                <span className="hidden text-xl font-bold text-foreground lg:block">Nexus</span>
+                <span className="hidden text-xl font-bold text-foreground lg:block">Synapse</span>
             </Link>
 
             <nav className="flex flex-1 flex-col gap-1 w-full">

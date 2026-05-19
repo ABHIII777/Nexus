@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: synapse_db
+    restart: always
+    environment:
+      POSTGRES_USER: abhipatel
+      POSTGRES_PASSWORD: '0089'
+      POSTGRES_DB: synapse
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: synapse_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      # Notice we changed localhost to "db" (the name of the service above)
+      - DATABASE_URL=postgresql://abhipatel:0089@db:5432/synapse
+      # Copying your JWT secret from .env
+      - JWT_SECRET=212f7e59c8eb7793b1c8b2798af3fd09f1e6020604e5305eef63ab0bf82dddea86caea9103391a95335121150d173ece27f4e9c824324dd090743caa20ed421e
+    depends_on:
+      - db
+
+volumes:
+  db_data:

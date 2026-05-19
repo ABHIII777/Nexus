@@ -43,7 +43,7 @@ export function TrendingSidebar() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search Nexus"
+            placeholder="Search Synapse"
             className="rounded-full bg-secondary border-0 pl-10 focus-visible:ring-1 focus-visible:ring-primary"
           />
         </div>
@@ -121,7 +121,7 @@ export function TrendingSidebar() {
           <a href="#" className="hover:underline">Cookie Policy</a>
           <a href="#" className="hover:underline">Accessibility</a>
           <a href="#" className="hover:underline">Ads info</a>
-          <span>© 2026 Nexus</span>
+          <span>© 2026 Synapse</span>
         </div>
       </div>
     </aside>

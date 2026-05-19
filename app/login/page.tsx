@@ -68,11 +68,11 @@ export default function LoginPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
             <Zap className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-2xl font-bold">Nexus</span>
+          <span className="text-2xl font-bold">Synapse</span>
         </Link>
         <div className="relative z-10">
           <blockquote className="text-2xl font-medium leading-relaxed text-balance">
-            &ldquo;Nexus has transformed how our team collaborates and stays
+            &ldquo;Synapse has transformed how our team collaborates and stays
             connected. It&apos;s not just social media, it&apos;s a
             community.&rdquo;
           </blockquote>
@@ -87,7 +87,7 @@ export default function LoginPage() {
           </div>
         </div>
         <div className="relative z-10 text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Nexus. All rights reserved.
+          &copy; {new Date().getFullYear()} Synapse. All rights reserved.
         </div>
       </div>
 
@@ -98,7 +98,7 @@ export default function LoginPage() {
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
               <Zap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">Nexus</span>
+            <span className="text-xl font-bold">Synapse</span>
           </Link>
         </div>
 
